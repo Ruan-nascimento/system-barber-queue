@@ -3,7 +3,9 @@
 import { InputAuth } from "@/app/_components/inputAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { API_URL } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod"
@@ -30,6 +32,8 @@ export type RegisterForm = z.infer<typeof registerSchema>
 export default function RegisterPage() {
     
     const [showPassword, setShowPassword] = useState<boolean>(false)
+    const [name, setName] = useState<string>('')
+    const newName = name && name[0].toUpperCase() + name.slice(1)
 
     const {register, handleSubmit, formState: {errors}} = useForm<RegisterForm>({
         resolver: zodResolver(registerSchema)
@@ -49,11 +53,16 @@ export default function RegisterPage() {
 
                 <h1
                 className="text-2xl font-bold text-zinc-100 mb-6 text-center"
-                >Seja Nosso <b className="text-blue-500">Cliente!</b></h1>
+                >
+                    {name ? `Bem Vindo ${newName}!` :
+                    'Seja Nosso Cliente!'}
+                </h1>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
                     <InputAuth
+                    onChange={e => setName(e.target.value)}
+                    value={name}
                     errors={errors.name}
                     message={errors.name?.message}
                     id="name"
@@ -123,12 +132,19 @@ export default function RegisterPage() {
                     </div>
 
                     <Button type="submit"
-                    className="w-full bg-zinc-500 text-zinc-100 hover:bg-zinc-400 duration-200 ease-in-out cursor-pointer"
+                    className="w-full bg-blue-600 text-zinc-100 hover:bg-blue-500 duration-200 ease-in-out cursor-pointer"
                     >
                         Registrar
                     </Button>
 
                 </form>
+
+                <div className="mt-4 text-sm cursor-pointer">
+                    <Link
+                    href={`${API_URL}/auth/login`}>
+                        Já tem uma Conta? <b className="text-blue-500">Entrar</b>
+                    </Link>
+                </div>
 
             </div>
 
