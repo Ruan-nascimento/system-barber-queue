@@ -73,7 +73,6 @@ we-barbearia/
 │   └── page.tsx                     # Welcome page (/)
 ├── lib/
 │   ├── AuthContext.tsx              # Authentication context
-│   ├── prisma.ts                    # Prisma configuration
 │   └── utils.ts                      # Utility functions
 ├── prisma/
 │   └── schema.prisma                # Database schema
@@ -108,8 +107,8 @@ we-barbearia/
 ### 🛠️ **Steps to Run Locally**
 1️⃣ Clone the repository:
 ```bash
-git clone https://github.com/your-username/we-barbearia.git
-cd we-barbearia
+git clone https://github.com/Ruan-nascimento/system-barber-queue.git
+cd system-barber-queue
 ```
 
 2️⃣ Install dependencies:
@@ -121,6 +120,7 @@ npm install
 ```env
 DATABASE_URL="your-database-url"
 JWT_SECRET="your-secret-key"
+NEXT_PUBLIC_API_URL="http://localhost:3000"
 ```
 
 4️⃣ Sync the database:
