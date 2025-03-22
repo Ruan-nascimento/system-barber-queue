@@ -1,0 +1,76 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id         String      @id @default(uuid())
+  name       String
+  phone      String      @unique
+  email      String?     @unique
+  password   String
+  role       String      @default("client")
+  createdAt  DateTime    @default(now())
+  queues     Queue[]
+  payments   Payments[]
+}
+
+model Queue {
+  id            String         @id @default(uuid())
+  userId        String
+  barberId      Int?
+  status        String         @default("waiting")
+  position      Int
+  createdAt     DateTime       @default(now())
+  estimatedTime Int?
+  user          User           @relation(fields: [userId], references: [id])
+  barber        Barber?        @relation(fields: [barberId], references: [id])
+  services      QueueService[]
+}
+
+model Barber {
+  id        Int         @id @default(autoincrement())
+  name      String
+  queues    Queue[]
+  payments  Payments[]
+}
+
+model Services {
+  id            Int            @id @default(autoincrement())
+  service       String
+  value         Float
+  lengthService Int
+  payments      PaymentService[]
+  queues        QueueService[]
+}
+
+model Payments {
+  id          String           @id @default(uuid())
+  userId      String
+  barberId    Int
+  totalValue  Float
+  createdAt   DateTime         @default(now())
+  user        User             @relation(fields: [userId], references: [id])
+  barber      Barber           @relation(fields: [barberId], references: [id])
+  services    PaymentService[]
+}
+
+model PaymentService {
+  paymentId   String
+  serviceId   Int
+  payment     Payments    @relation(fields: [paymentId], references: [id])
+  service     Services    @relation(fields: [serviceId], references: [id])
+  @@id([paymentId, serviceId])
+}
+
+model QueueService {
+  queueId    String
+  serviceId  Int
+  queue      Queue       @relation(fields: [queueId], references: [id])
+  service    Services    @relation(fields: [serviceId], references: [id])
+  @@id([queueId, serviceId])
+}
