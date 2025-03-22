@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Adicione useEffect
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,7 +38,7 @@ export default function RegisterPage() {
   const [name, setName] = useState<string>("");
   const newName = name && name[0].toUpperCase() + name.slice(1);
   const router = useRouter();
-  const { setUser } = useAuth()
+  const { setUser, user, loading } = useAuth();
 
   const {
     register,
@@ -48,6 +48,22 @@ export default function RegisterPage() {
     resolver: zodResolver(registerSchema),
   });
 
+  // Redireciona se o usuário já estiver autenticado
+  useEffect(() => {
+    if (!loading && user) {
+      router.push(`${API_URL}/main/${user.id}`);
+    }
+  }, [loading, user, router]);
+
+  // Enquanto carrega, mostra um estado de carregamento
+  if (loading) {
+    return (
+      <div className="h-dvh w-screen flex items-center justify-center bg-zinc-900 text-zinc-200">
+        <p>Carregando...</p>
+      </div>
+    );
+  }
+
   const onSubmit = async (data: RegisterForm) => {
     try {
       const response = await fetch(`${API_URL}/api/auth/register`, {
@@ -56,6 +72,7 @@ export default function RegisterPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
+        credentials: "include",
       });
 
       const result = await response.json();
@@ -68,8 +85,8 @@ export default function RegisterPage() {
         id: result.id,
         name: result.name,
         phone: result.phone,
-        email: result.email || null
-      })
+        email: result.email || null,
+      });
 
       toast.success("Cadastro concluído com sucesso!", {
         style: {

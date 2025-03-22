@@ -1,6 +1,8 @@
 'use client'
 
-import { createContext, ReactNode, useContext, useState } from "react"
+import { createContext, ReactNode, useContext, useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { API_URL } from "./utils"
 
 interface User {
     id: string
@@ -12,15 +14,54 @@ interface User {
 interface AuthContextType {
     user: User | null
     setUser: (user: User | null) => void
+    loading: boolean
+    logout: () => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: {children: ReactNode}) {
     const [user, setUser] = useState<User | null>(null)
+    const [loading, setLoading] = useState<boolean>(true)
+    const router = useRouter()
 
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const response = await fetch(`${API_URL}/api/auth/me`, {
+                    credentials: 'include'
+                })
+
+                if(response.ok) {
+                    const userData = await response.json()
+                    setUser(userData)
+                } else {
+                    setUser(null)
+                }
+            } catch (error) {
+                setUser(null)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchUser()
+    }, [])
+
+    const logout = async () => {
+        try {
+            await fetch(`${API_URL}/api/auth/logout`, {
+                method: "POST",
+                credentials: "include"
+            })
+            setUser(null)
+            router.push(`${API_URL}/auth/login`)
+        } catch (error) {
+            console.error("Erro ao fazer logout", error)
+        }
+    }
     return(
-        <AuthContext.Provider value={{user, setUser}}>
+        <AuthContext.Provider value={{user, setUser, loading, logout}}>
             {children}
         </AuthContext.Provider>
     )
