@@ -109,7 +109,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="h-dvh w-screen flex px-4 items-center justify-center bg-zinc-900 text-zinc-200">
+    <div className="h-dvh w-screen flex flex-col gap-4 px-4 items-center justify-center bg-zinc-900 text-zinc-200">
       <div className="w-full min-w-[300px] max-w-md p-6 bg-zinc-800 rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold text-zinc-100 mb-6 text-center">
           {name ? `Bem Vindo ${newName}!` : "Seja Nosso Cliente!"}
@@ -193,6 +193,11 @@ export default function RegisterPage() {
           </Link>
         </div>
       </div>
+
+      <Button
+        onClick={e => router.push(`${API_URL}/`)}
+        className="w-full min-w-[300px] max-w-md bg-zinc-700 duration-200 ease-in-out hover:bg-zinc-600 active:bg-zinc-500 cursor-pointer"
+        >Voltar</Button>
     </div>
   );
 }

@@ -12,7 +12,7 @@ export default function MainPage() {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push(`${API_URL}/auth/register`);
+      router.push(`${API_URL}/auth/login`);
     }
   }, [loading, user, router]);
 
