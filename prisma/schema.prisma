@@ -74,3 +74,9 @@ model QueueService {
   service    Services    @relation(fields: [serviceId], references: [id])
   @@id([queueId, serviceId])
 }
+
+model BarberShopStatus {
+  id     String  @id @default("1") 
+  status Boolean @default(false)
+  updatedAt DateTime @updatedAt
+}

@@ -35,7 +35,7 @@ export const MenuBarMobile = ({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
           onClick={() => setOpenMenu(false)}
-          className="bg-black/60 lg:bg-transparent w-screen h-dvh absolute z-10"
+          className="bg-black/60 w-screen h-dvh absolute z-10"
         >
           <motion.aside
             initial={{ x: "-100%" }}
