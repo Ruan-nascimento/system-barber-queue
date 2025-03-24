@@ -8,18 +8,20 @@ import { ServiceChart } from "@/app/_components/serviceChart/indes";
 import { Button } from "@/components/ui/button";
 import { API_URL } from "@/lib/utils";
 import { Spinner } from "@/app/_components/spinner";
+import { TotalValue } from "@/app/_components/cards/totalValue";
+import { PeoplesInQueue } from "@/app/_components/cards/peoplesInQueue";
+import { CurrentClients } from "@/app/_components/cards/currentClients";
+import { BarberStatus } from "@/app/_components/cards/barberStatus";
 
 export const DashboardPage = () => {
   const { user } = useAuth();
   const [status, setStatus] = useState<boolean>(false);
   const [totalSales, setTotalSales] = useState<number>(0);
   const [queueCount, setQueueCount] = useState<number>(0);
-  const [topServices, setTopServices] = useState<
-    { name: string; count: number }[]
-  >([]);
+  const [clientCount, setClientCount] = useState<number>(0)
   const [isLoadingSales, setIsLoadingSales] = useState<boolean>(true);
   const [isLoadingQueue, setIsLoadingQueue] = useState<boolean>(true);
-  const [isLoadingServices, setIsLoadingServices] = useState<boolean>(true);
+  const [isLoadingClients, setIsLoadingClients] = useState<boolean>(true);
   const [isLoadingStatus, setIsLoadingStatus] = useState<boolean>(true);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState<boolean>(false);
 
@@ -56,6 +58,22 @@ export const DashboardPage = () => {
     }
   };
 
+  const fetchClientCount = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/users/count-clients`);
+      const data = await parseJSONResponse(response);
+      if (response.ok) {
+        return data.count;
+      } else {
+        console.error("Erro ao buscar a contagem de clientes:", data.error);
+        return 0;
+      }
+    } catch (error) {
+      console.error("Erro ao buscar a contagem de clientes:", error);
+      return 0;
+    }
+  };
+
   const fetchBarberShopStatus = async () => {
     try {
       const response = await fetch(`${API_URL}/api/barberShop/status`); 
@@ -83,7 +101,6 @@ export const DashboardPage = () => {
         },
         body: JSON.stringify({ status: newStatus }),
       });
-      console.log("Status da resposta de atualização:", response.status);
       const data = await parseJSONResponse(response);
       if (response.ok) {
         setStatus(data.status);
@@ -132,23 +149,16 @@ export const DashboardPage = () => {
     }
   };
 
-  const fetchTopServices = async () => {
-    try {
-      const response = await fetch(
-        `${API_URL}/api/services/top?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
-      );
-      const data = await parseJSONResponse(response);
-      if (response.ok) {
-        return data.topServices;
-      } else {
-        console.error("Erro ao buscar os principais serviços:", data.error);
-        return [];
-      }
-    } catch (error) {
-      console.error("Erro ao buscar os principais serviços:", error);
-      return [];
-    }
-  };
+  useEffect(() => {
+    const loadClientCount = async () => {
+      setIsLoadingClients(true);
+      const newClientCount = await fetchClientCount();
+      setClientCount(newClientCount);
+      setIsLoadingClients(false);
+    };
+
+    loadClientCount();
+  }, []);
 
 
   useEffect(() => {
@@ -165,9 +175,7 @@ export const DashboardPage = () => {
     pollStatus();
 
 
-    const intervalId = setInterval(pollStatus, 1000);
-
-    return () => clearInterval(intervalId);
+   
   }, [status]);
   useEffect(() => {
     const loadTotalSales = async () => {
@@ -189,16 +197,6 @@ export const DashboardPage = () => {
 
     loadQueueCount();
   }, []); 
-  useEffect(() => {
-    const loadTopServices = async () => {
-      setIsLoadingServices(true);
-      const newTopServices = await fetchTopServices();
-      setTopServices(newTopServices);
-      setIsLoadingServices(false);
-    };
-
-    loadTopServices();
-  }, [startDate, endDate]); 
 
   const formatCurrency = (value: number) => {
     return `R$ ${value.toLocaleString("pt-BR", {
@@ -225,76 +223,15 @@ export const DashboardPage = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-6 gap-4">
-          <Card>
-            <span className="text-zinc-300/60">Suas Vendas</span>
-            {isLoadingSales ? (
-              <div className="mt-4">
-                <Spinner />
-              </div>
-            ) : (
-              <>
-                <span className="text-2xl lg:text-4xl mt-4 text-blue-600">
-                  {formatCurrency(totalSales)}
-                </span>
-                <span className="text-xs opacity-55 mt-8">
-                  Valor apenas de Serviços Confirmados...
-                </span>
-              </>
-            )}
-          </Card>
+          
+          <TotalValue formatCurrency={formatCurrency} isLoadingSales={isLoadingSales} totalSales={totalSales}/>
 
-          <Card>
-            <span className="text-zinc-300/60">Pessoas na Fila</span>
-            {isLoadingQueue ? (
-              <div className="mt-4">
-                <Spinner />
-              </div>
-            ) : (
-              <span className="text-4xl lg:text-7xl mt-4 text-blue-600">{queueCount}</span>
-            )}
-          </Card>
+          <PeoplesInQueue isLoadingQueue={isLoadingQueue} queueCount={queueCount}/>
 
-          <Card>
-            <span className="text-zinc-300/60">Top 3 Serviços</span>
-            {isLoadingServices ? (
-              <div className="mt-4">
-                <Spinner />
-              </div>
-            ) : topServices.length > 0 ? (
-              topServices.map((service, index) => (
-                <span key={index} className="text-sm mt-2 block">
-                  {index + 1}. {service.name} - {service.count}
-                </span>
-              ))
-            ) : (
-              <span className="text-sm mt-2 block">Nenhum serviço encontrado</span>
-            )}
-          </Card>
+          <CurrentClients clientCount={clientCount} isLoadingClients={isLoadingClients}/>
 
-          <Card>
-            <span className="text-zinc-300/60">Status da Barbearia</span>
-                <div className="relative">
-                  <span className="text-blue-600 text-xl lg:text-4xl mt-2">
-                    {status ? "Aberto" : "Fechado"}
-                  </span>
-                  <span
-                    className={`w-4 h-4 absolute rounded-full right-0 top-[50%] transform -translate-y-1/2 ${
-                      status ? "bg-green-700 pulse-glow-green" : "bg-red-700 pulse-glow-red"
-                    }`}
-                  ></span>
-                </div>
-                <Button
-                  onClick={() => updateBarberShopStatus(!status)}
-                  className="bg-blue-600 mt-4 duration-200 ease-in-out hover:bg-blue-600/90 active:bg-blue-600/80 cursor-pointer flex items-center justify-center"
-                  disabled={isUpdatingStatus}
-                >
-                  {isUpdatingStatus ? (
-                    <Spinner />
-                  ) : (
-                    <>{status ? "Fechar.." : "Abrir..."}.</>
-                  )}
-                </Button>
-          </Card>
+          <BarberStatus isUpdatingStatus={isUpdatingStatus} status={status} updateBarberShopStatus={updateBarberShopStatus} />
+          
         </div>
 
         <ServiceChart endDate={endDate} startDate={startDate} />
