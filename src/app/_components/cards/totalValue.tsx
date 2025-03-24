@@ -20,7 +20,7 @@ export const TotalValue = ({isLoadingSales, totalSales, formatCurrency}: TotalVa
                 <span className="text-2xl lg:text-4xl mt-4 text-blue-600">
                     {formatCurrency(totalSales)}
                 </span>
-                <span className="text-xs opacity-55 mt-8">
+                <span className="text-xs opacity-55 mt-6">
                     Valor apenas de Serviços Confirmados...
                 </span>
                 </>

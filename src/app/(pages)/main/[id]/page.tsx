@@ -9,6 +9,7 @@ import { MenuBarMobile } from "@/app/_components/main/menuBar";
 import { DashboardPage } from "@/app/_components/main/pages/admin/dashboardPage";
 import { QueuePage } from "@/app/_components/main/pages/admin/queuePage";
 import { HistoryPage } from "@/app/_components/main/pages/admin/historyPage";
+import { MenuBarDesktop } from "@/app/_components/main/menuBarDesktop";
 
 export type UserSelected = "dashboard" | "history" | "queue"
 
@@ -33,13 +34,15 @@ export default function MainPage() {
   }
 
   return (
-    <div className="relative h-dvh w-screen flex items-center justify-center bg-zinc-900 text-zinc-200">
+    <div className="relative h-dvh w-screen flex items-center justify-start bg-zinc-900 text-zinc-200">
       
       <Button 
       disabled={openMenu}
-      onClick={() => setOpenMenu(true)} className=" bg-amber-400 cursor-pointer absolute left-2 top-2">
-        Abra Aqui
+      onClick={() => setOpenMenu(true)} className=" bg-amber-400 cursor-pointer absolute left-2 top-2 lg:hidden">
+        #
       </Button>
+
+      <MenuBarDesktop menuSelected={menuSelected} setMenuSelected={setMenuSelected}/>
       
       {
         menuSelected === "dashboard" && (
@@ -60,6 +63,7 @@ export default function MainPage() {
       }
 
       <MenuBarMobile openMenu={openMenu} setOpenMenu={setOpenMenu} menuSelected={menuSelected} setMenuSelected={setMenuSelected}/>
+      
 
     </div>
   );
