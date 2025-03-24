@@ -42,7 +42,7 @@ export const DateSelect = ({
             variant="outline"
             className="bg-zinc-700 h-12 border-zinc-600 w-full text-zinc-200 hover:bg-zinc-600 hover:text-zinc-100 cursor-pointer"
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <CalendarIcon className="mr-2 h-4 w-4 text-" />
             {formatDate(startDate)} - {formatDate(endDate)}
           </Button>
         </PopoverTrigger>
@@ -54,7 +54,7 @@ export const DateSelect = ({
                 type="date"
                 value={formatDateForInput(startDate)}
                 onChange={(e) => setStartDate(adjustDateToLocal(e.target.value))}
-                className="bg-zinc-700 cursor-pointer border-zinc-600 text-zinc-200 focus:ring-blue-500 focus:border-blue-500"
+                className="bg-zinc-700 cursor-pointer w-full border-zinc-600 text-zinc-200 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             <div>
@@ -63,7 +63,7 @@ export const DateSelect = ({
                 type="date"
                 value={formatDateForInput(endDate)}
                 onChange={(e) => setEndDate(adjustDateToLocal(e.target.value))}
-                className="bg-zinc-700 border-zinc-600 cursor-pointer text-zinc-200 focus:ring-blue-500 focus:border-blue-500"
+                className="bg-zinc-700 border-zinc-600 w-full cursor-pointer text-zinc-200 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
           </div>
