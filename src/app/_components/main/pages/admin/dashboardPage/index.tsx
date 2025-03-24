@@ -56,36 +56,27 @@ export const DashboardPage = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchBarberShopStatus = async () => {
-      setIsLoadingStatus(true);
-      try {
-        console.log("Buscando status da barbearia em:", `${API_URL}/api/barbershop/status`);
-        const response = await fetch(`${API_URL}/api/barberShop/status`);
-        console.log("Status da resposta:", response.status);
-        const data = await parseJSONResponse(response);
-        if (response.ok) {
-          setStatus(data.status);
-        } else {
-          console.error("Erro ao buscar o status da barbearia:", data.error);
-          setStatus(false);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar o status da barbearia:", error);
-        setStatus(false);
-      } finally {
-        setIsLoadingStatus(false);
+  const fetchBarberShopStatus = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/barberShop/status`); 
+      console.log("Status da resposta:", response.status);
+      const data = await parseJSONResponse(response);
+      if (response.ok) {
+        return data.status;
+      } else {
+        console.error("Erro ao buscar o status da barbearia:", data.error);
+        return false;
       }
-    };
-
-    fetchBarberShopStatus();
-  }, []);
+    } catch (error) {
+      console.error("Erro ao buscar o status da barbearia:", error);
+      return false;
+    }
+  };
 
   const updateBarberShopStatus = async (newStatus: boolean) => {
     setIsUpdatingStatus(true);
     try {
-      console.log("Atualizando status da barbearia para:", newStatus);
-      const response = await fetch(`${API_URL}/api/barberShop/status`, {
+      const response = await fetch(`${API_URL}/api/barberShop/status`, { 
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -106,78 +97,108 @@ export const DashboardPage = () => {
     }
   };
 
+  const fetchTotalSales = async () => {
+    try {
+      const response = await fetch(
+        `${API_URL}/api/payments/total?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
+      );
+      const data = await parseJSONResponse(response);
+      if (response.ok) {
+        return data.totalValue;
+      } else {
+        console.error("Erro ao buscar as vendas totais:", data.error);
+        return 0;
+      }
+    } catch (error) {
+      console.error("Erro ao buscar as vendas totais:", error);
+      return 0;
+    }
+  };
+
+
+  const fetchQueueCount = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/queues/count`);
+      const data = await parseJSONResponse(response);
+      if (response.ok) {
+        return data.count;
+      } else {
+        console.error("Erro ao buscar a contagem da fila:", data.error);
+        return 0;
+      }
+    } catch (error) {
+      console.error("Erro ao buscar a contagem da fila:", error);
+      return 0;
+    }
+  };
+
+  const fetchTopServices = async () => {
+    try {
+      const response = await fetch(
+        `${API_URL}/api/services/top?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
+      );
+      const data = await parseJSONResponse(response);
+      if (response.ok) {
+        return data.topServices;
+      } else {
+        console.error("Erro ao buscar os principais serviços:", data.error);
+        return [];
+      }
+    } catch (error) {
+      console.error("Erro ao buscar os principais serviços:", error);
+      return [];
+    }
+  };
+
+
   useEffect(() => {
-    const fetchTotalSales = async () => {
+    const pollStatus = async () => {
+      setIsLoadingStatus(true);
+      const newStatus = await fetchBarberShopStatus();
+      if (newStatus !== status) {
+        setStatus(newStatus);
+      }
+      setIsLoadingStatus(false);
+    };
+
+
+    pollStatus();
+
+
+    const intervalId = setInterval(pollStatus, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [status]);
+  useEffect(() => {
+    const loadTotalSales = async () => {
       setIsLoadingSales(true);
-      try {
-        const response = await fetch(
-          `${API_URL}/api/payments/total?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
-        );
-        const data = await parseJSONResponse(response);
-        if (response.ok) {
-          setTotalSales(data.totalValue);
-        } else {
-          console.error("Erro ao buscar as vendas totais:", data.error);
-          setTotalSales(0);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar as vendas totais:", error);
-        setTotalSales(0);
-      } finally {
-        setIsLoadingSales(false);
-      }
+      const newTotalSales = await fetchTotalSales();
+      setTotalSales(newTotalSales);
+      setIsLoadingSales(false);
     };
 
-    fetchTotalSales();
+    loadTotalSales();
   }, [startDate, endDate]);
-
   useEffect(() => {
-    const fetchQueueCount = async () => {
+    const loadQueueCount = async () => {
       setIsLoadingQueue(true);
-      try {
-        const response = await fetch(`${API_URL}/api/queues/count`);
-        const data = await parseJSONResponse(response);
-        if (response.ok) {
-          setQueueCount(data.count);
-        } else {
-          console.error("Erro ao buscar a contagem da fila:", data.error);
-          setQueueCount(0);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar a contagem da fila:", error);
-        setQueueCount(0);
-      } finally {
-        setIsLoadingQueue(false);
-      }
+      const newQueueCount = await fetchQueueCount();
+      setQueueCount(newQueueCount);
+      setIsLoadingQueue(false);
     };
 
-    fetchQueueCount();
-  }, []);
-
+    loadQueueCount();
+  }, []); 
   useEffect(() => {
-    const fetchTopServices = async () => {
+    const loadTopServices = async () => {
       setIsLoadingServices(true);
-      try {
-        const response = await fetch(
-          `${API_URL}/api/services/top?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
-        );
-        const data = await parseJSONResponse(response);
-        if (response.ok) {
-          setTopServices(data.topServices);
-        } else {
-          console.error("Erro ao buscar os principais serviços:", data.error);
-          setTopServices([]);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar os principais serviços:", error);
-        setTopServices([]);
-      } finally {
-        setIsLoadingServices(false);
-      }
+      const newTopServices = await fetchTopServices();
+      setTopServices(newTopServices);
+      setIsLoadingServices(false);
     };
 
-    fetchTopServices();
-  }, [startDate, endDate]);
+    loadTopServices();
+  }, [startDate, endDate]); 
 
   const formatCurrency = (value: number) => {
     return `R$ ${value.toLocaleString("pt-BR", {
@@ -252,12 +273,6 @@ export const DashboardPage = () => {
 
           <Card>
             <span className="text-zinc-300/60">Status da Barbearia</span>
-            {isLoadingStatus ? (
-              <div className="mt-4">
-                <Spinner />
-              </div>
-            ) : (
-              <>
                 <div className="relative">
                   <span className="text-blue-600 text-xl lg:text-4xl mt-2">
                     {status ? "Aberto" : "Fechado"}
@@ -279,8 +294,6 @@ export const DashboardPage = () => {
                     <>{status ? "Fechar.." : "Abrir..."}.</>
                   )}
                 </Button>
-              </>
-            )}
           </Card>
         </div>
 
