@@ -1,3 +1,5 @@
+"use client";
+
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,19 +21,29 @@ export const DateSelect = ({
   setStartDate,
   setEndDate,
 }: DateSelectProps) => {
-
   const formatDateForInput = (date: Date) => {
     const offset = date.getTimezoneOffset();
     const adjustedDate = new Date(date.getTime() + offset * 60 * 1000);
     return adjustedDate.toISOString().split("T")[0];
   };
 
-
   const adjustDateToLocal = (dateString: string) => {
     const [year, month, day] = dateString.split("-").map(Number);
     const date = new Date(year, month - 1, day);
     const offset = date.getTimezoneOffset();
     return new Date(date.getTime() - offset * 60 * 1000);
+  };
+
+  const formatStartDateWithPlusOneDay = (date: Date) => {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + 1);
+    return formatDate(newDate);
+  };
+
+  const formatEndDateWithPlusOneDay = (date: Date) => {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + 1);
+    return formatDate(newDate);
   };
 
   return (
@@ -43,7 +55,7 @@ export const DateSelect = ({
             className="bg-zinc-700 h-12 overflow-clip border-zinc-600 w-full text-zinc-200 hover:bg-zinc-600 hover:text-zinc-100 cursor-pointer"
           >
             <CalendarIcon className="mr-2 h-4 w-4 text-" />
-            {formatDate(startDate)} - {formatDate(endDate)}
+            {formatStartDateWithPlusOneDay(startDate)} - {formatEndDateWithPlusOneDay(endDate)}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-80 bg-zinc-800 border-zinc-600 text-zinc-200">
