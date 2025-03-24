@@ -31,6 +31,12 @@ export async function POST(request: Request) {
       },
     });
 
+    await prisma.notification.create({
+      data: {
+        message: `Novo Usuário Cadastrado! ${user.name}`,
+      },
+    });
+
     const token = jwt.sign(
         {id: user.id, phone: user.phone},
         secret,

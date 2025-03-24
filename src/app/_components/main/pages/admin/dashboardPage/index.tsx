@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { DateSelect } from "@/app/_components/dateSelect";
-import { Card } from "@/app/_components/cards";
-import { ServiceChart } from "@/app/_components/serviceChart/indes";
-import { Button } from "@/components/ui/button";
+import { ServiceChart } from "@/app/_components/serviceChart";
 import { API_URL } from "@/lib/utils";
-import { Spinner } from "@/app/_components/spinner";
 import { TotalValue } from "@/app/_components/cards/totalValue";
 import { PeoplesInQueue } from "@/app/_components/cards/peoplesInQueue";
 import { CurrentClients } from "@/app/_components/cards/currentClients";
 import { BarberStatus } from "@/app/_components/cards/barberStatus";
+import { Notification } from "@/app/_components/notifications/buttonBell";
+import { NotificationModal } from "@/app/_components/notifications/notificationModal";
+import { NotificationProvider } from "@/lib/NotificationContext";
 
 export const DashboardPage = () => {
   const { user } = useAuth();
@@ -206,10 +206,11 @@ export const DashboardPage = () => {
   };
 
   return (
-
-      <section className="w-full max-w-[1400px] h-full p-10 flex flex-col overflow-auto custom-scrollbar">
-        <h1 className="text-2xl lg:text-3xl">
-          Olá <b className="text-blue-600">{user?.name}</b>
+      <NotificationProvider>
+      <section className="w-full relative max-w-[1400px] h-full p-10 flex flex-col overflow-auto custom-scrollbar">
+        <h1 className="flex items-center gap-4 text-2xl lg:text-3xl">
+          Olá <b className="text-blue-600 flex-1 overflow-clip">{user?.name}</b>
+          <Notification/>
         </h1>
 
         <div className="mt-6 w-full justify-center">
@@ -223,6 +224,8 @@ export const DashboardPage = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-6 gap-4">
+
+          <NotificationModal/>
           
           <TotalValue formatCurrency={formatCurrency} isLoadingSales={isLoadingSales} totalSales={totalSales}/>
 
@@ -235,6 +238,8 @@ export const DashboardPage = () => {
         </div>
 
         <ServiceChart endDate={endDate} startDate={startDate} />
+
       </section>
+      </NotificationProvider>
   );
 };

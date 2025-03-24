@@ -40,7 +40,7 @@ export const DateSelect = ({
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="bg-zinc-700 h-12 border-zinc-600 w-full text-zinc-200 hover:bg-zinc-600 hover:text-zinc-100 cursor-pointer"
+            className="bg-zinc-700 h-12 overflow-clip border-zinc-600 w-full text-zinc-200 hover:bg-zinc-600 hover:text-zinc-100 cursor-pointer"
           >
             <CalendarIcon className="mr-2 h-4 w-4 text-" />
             {formatDate(startDate)} - {formatDate(endDate)}
