@@ -203,7 +203,7 @@ export const DashboardPage = () => {
           />
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 mt-6 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-6 gap-4">
           <Card>
             <span className="text-zinc-300/60">Suas Vendas</span>
             {isLoadingSales ? (
@@ -212,7 +212,7 @@ export const DashboardPage = () => {
               </div>
             ) : (
               <>
-                <span className="text-4xl mt-4 text-blue-600">
+                <span className="text-2xl lg:text-4xl mt-4 text-blue-600">
                   {formatCurrency(totalSales)}
                 </span>
                 <span className="text-xs opacity-55 mt-8">
@@ -229,7 +229,7 @@ export const DashboardPage = () => {
                 <Spinner />
               </div>
             ) : (
-              <span className="text-7xl mt-4 text-blue-600">{queueCount}</span>
+              <span className="text-4xl lg:text-7xl mt-4 text-blue-600">{queueCount}</span>
             )}
           </Card>
 
@@ -259,7 +259,7 @@ export const DashboardPage = () => {
             ) : (
               <>
                 <div className="relative">
-                  <span className="text-blue-600 text-4xl mt-2">
+                  <span className="text-blue-600 text-xl lg:text-4xl mt-2">
                     {status ? "Aberto" : "Fechado"}
                   </span>
                   <span
