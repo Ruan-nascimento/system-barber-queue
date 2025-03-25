@@ -2,6 +2,9 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ButtonMenuBar } from "../../buttonMenuBar";
 import { UserSelected } from "@/app/(pages)/main/[id]/page";
+import { useAuth } from "@/lib/AuthContext";
+import { Spinner } from "../../spinner";
+import { Button } from "@/components/ui/button";
 
 export type LucideIconName = "List" | "Clock" | "LayoutDashboard";
 
@@ -27,6 +30,8 @@ export const MenuBarMobile = ({
   setMenuSelected,
   menuSelected,
 }: MenuBarProps) => {
+
+  const {loading, logout} = useAuth()
   
 
   return (
@@ -60,6 +65,13 @@ export const MenuBarMobile = ({
               </ButtonMenuBar.root>
             ))}
           </motion.aside>
+
+          <div>
+            {loading ? <Spinner/> :
+            <Button variant={"destructive"} className="bg-red-700 ml-10" onClick={logout}>
+            Sair
+            </Button>}
+        </div>
         </motion.div>
       )}
     </AnimatePresence>

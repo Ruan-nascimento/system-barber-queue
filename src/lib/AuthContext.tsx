@@ -49,6 +49,7 @@ export function AuthProvider({ children }: {children: ReactNode}) {
     }, [])
 
     const logout = async () => {
+        setLoading(true)
         try {
             await fetch(`${API_URL}/api/auth/logout`, {
                 method: "POST",
@@ -58,6 +59,8 @@ export function AuthProvider({ children }: {children: ReactNode}) {
             router.push(`${API_URL}/auth/login`)
         } catch (error) {
             console.error("Erro ao fazer logout", error)
+        } finally {
+            setLoading(false)
         }
     }
     return(
