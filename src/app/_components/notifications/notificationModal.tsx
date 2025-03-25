@@ -20,7 +20,7 @@ export const NotificationModal = () => {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
       onClick={handleOverlayClick}
     >
-      <div className="bg-zinc-900 rounded-lg shadow-lg p-6 w-full max-w-[300px] lg:max-w-[450px] mx-2 max-h-[70%] h-[70%] overflow-clip">
+      <div className="bg-zinc-900 rounded-lg shadow-lg p-6 w-[70%] lg:max-w-[500px] mx-2 max-h-[70%] h-[70%] overflow-clip">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-white">Notificações</h2>
 

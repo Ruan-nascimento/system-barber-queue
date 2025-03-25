@@ -65,13 +65,6 @@ export const MenuBarMobile = ({
               </ButtonMenuBar.root>
             ))}
           </motion.aside>
-
-          <div>
-            {loading ? <Spinner/> :
-            <Button variant={"destructive"} className="bg-red-700 ml-10" onClick={logout}>
-            Sair
-            </Button>}
-        </div>
         </motion.div>
       )}
     </AnimatePresence>

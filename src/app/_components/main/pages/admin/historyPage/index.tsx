@@ -5,6 +5,8 @@ import { useAuth } from "@/lib/AuthContext"
 export const HistoryPage = () => {
     const {logout, loading} = useAuth()
     return (
-        <div>op</div>
+        <div
+        className="mt-20"
+        >op</div>
     )
 }

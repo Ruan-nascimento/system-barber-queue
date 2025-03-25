@@ -11,7 +11,7 @@ export const QueuePage = () => {
 
     return(
         <section 
-        className="flex w-full h-full lg:p-10 p-4 flex-col gap-6"
+        className="flex w-full h-full lg:p-10 p-4 flex-col gap-6 mt-20"
         >
 
        <HeaderQueuePage selected={selected} setSelected={setSelected}/>

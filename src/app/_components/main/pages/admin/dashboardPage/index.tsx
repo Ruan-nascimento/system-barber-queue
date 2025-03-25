@@ -207,7 +207,7 @@ export const DashboardPage = () => {
 
   return (
       <NotificationProvider>
-      <section className="w-full relative max-w-[1400px] h-full p-10 flex flex-col overflow-auto custom-scrollbar">
+      <section className="w-full mt-20 lg:mt-0 relative max-w-[1400px] h-full p-10 flex flex-col overflow-auto custom-scrollbar">
         <h1 className="flex items-center gap-4 text-2xl lg:text-3xl">
           Olá <b className="text-blue-600 flex-1 overflow-clip">{user?.name}</b>
           <Notification/>
