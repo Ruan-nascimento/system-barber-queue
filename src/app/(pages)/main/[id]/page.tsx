@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
-import { Button } from "@/components/ui/button";
-import { API_URL } from "@/lib/utils";
+import { API_URL, handleScrollToTop } from "@/lib/utils";
 import { MenuBarMobile } from "@/app/_components/main/menuBar";
 import { DashboardPage } from "@/app/_components/main/pages/admin/dashboardPage";
 import { QueuePage } from "@/app/_components/main/pages/admin/queuePage";
@@ -42,14 +41,14 @@ export default function MainPage() {
 
       <div className="flex flex-col w-full h-full">
 
-      <header className="fixed w-full h-20 shadow lg:hidden flex  justify-between px-10 items-center">
+      <header className="fixed w-full h-20 shadow lg:hidden flex  justify-between px-6 items-center ">
         <Icon name="MenuIcon" size={32} className="duration-200 ease-in-out hover:bg-blue-700 cursor-pointer"
         onClick={()=> setOpenMenu(true)}
         />
 
         <span
-        className="font-bold text-2xl"
-        >WE Barbearia</span>
+        className="font-bold text-2xl cursor-pointer"
+        ><b className="text-blue-700 underline underline-offset-8">WE</b> Barbearia</span>
 
         <Icon name="LogOutIcon" size={32} className="cursor-pointer p-2 rounded-full duration-200 hover:bg-red-700"
         onClick={logout}

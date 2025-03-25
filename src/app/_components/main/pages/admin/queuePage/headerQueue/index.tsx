@@ -7,7 +7,7 @@ export const HeaderQueuePage = ({selected, setSelected}: {selected: string, setS
 
     return(
         <header
-        className="max-h-10 flex items-center shadow-lg lg:gap-4 gap-2"
+        className="max-h-10 flex items-center lg:gap-4 gap-2"
         >
             <ButtonQueue name="Filas" selected={selected} setSelected={setSelected} typed="queues"/>
             <ButtonQueue name="Add +" selected={selected} setSelected={setSelected} typed="add"/>
@@ -18,6 +18,11 @@ export const HeaderQueuePage = ({selected, setSelected}: {selected: string, setS
         </header>
     )
 }
+
+
+
+
+
 
 const ButtonQueue = ({setSelected, selected, typed, name, qtd}: {setSelected: (val: string) => void, selected: string, typed: string, name: string, qtd?: number | undefined}) => {
     return(

@@ -15,10 +15,10 @@ export const Root = ({ children, menuSelected, typed, className, ...rest }: Root
     <button
       {...rest}
       className={twMerge(
-        `w-full h-12 flex items-center px-4 justify-start gap-2 rounded-md duration-200 ease-in-out hover:shadow cursor-pointer ${
+        `w-full h-12 flex items-center px-4 justify-start gap-2 duration-200 ease-in-out hover:shadow cursor-pointer ${
           typed === menuSelected
-            ? "bg-blue-600 hover:bg-blue-600/80 active:bg-blue-800/50"
-            : "bg-zinc-800 hover:bg-zinc-800/80 active:bg-zinc-800/50 border border-zinc-600"
+            ? "bg-blue-600 hover:bg-blue-600/80 active:bg-blue-800/50 border-b border-l-8"
+            : "bg-zinc-900 hover:bg-zinc-800/80 active:bg-zinc-800/50 border-b border-zinc-600"
         }`,
         className
       )}

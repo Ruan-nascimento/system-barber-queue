@@ -51,8 +51,10 @@ export const MenuBarMobile = ({
             exit={{ x: "-100%" }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-zinc-900 w-[50%] max-w-[400px] h-full rounded-r p-4 flex flex-col gap-4"
+            className="bg-zinc-900 w-[50%] max-w-[400px] h-full rounded-r flex flex-col gap-4"
           >
+            <span className="text-2xl font-bold border-b py-6 text-center mb-4"><b className="text-blue-700 underline underline-offset-8">WE</b> Barbearia</span>
+            <div>
             {pages.map((page) => (
               <ButtonMenuBar.root
                 key={page}
@@ -64,6 +66,7 @@ export const MenuBarMobile = ({
                 {page.charAt(0).toUpperCase() + page.slice(1)}
               </ButtonMenuBar.root>
             ))}
+            </div>
           </motion.aside>
         </motion.div>
       )}

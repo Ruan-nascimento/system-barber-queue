@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { DateSelect } from "@/app/_components/dateSelect";
 import { ServiceChart } from "@/app/_components/serviceChart";
-import { API_URL } from "@/lib/utils";
+import { API_URL, handleScrollToTop } from "@/lib/utils";
 import { TotalValue } from "@/app/_components/cards/totalValue";
 import { PeoplesInQueue } from "@/app/_components/cards/peoplesInQueue";
 import { CurrentClients } from "@/app/_components/cards/currentClients";
@@ -24,6 +24,8 @@ export const DashboardPage = () => {
   const [isLoadingClients, setIsLoadingClients] = useState<boolean>(true);
   const [isLoadingStatus, setIsLoadingStatus] = useState<boolean>(true);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState<boolean>(false);
+
+
 
   const getLocalDate = (date: Date) => {
     const offset = date.getTimezoneOffset();
@@ -207,7 +209,7 @@ export const DashboardPage = () => {
 
   return (
       <NotificationProvider>
-      <section className="w-full mt-20 lg:mt-0 relative max-w-[1400px] h-full p-10 flex flex-col overflow-auto custom-scrollbar">
+      <section className="w-full mt-20 lg:mt-0 relative max-w-[1400px] p-6 h-full lg:px-10 flex flex-col overflow-auto custom-scrollbar">
         <h1 className="flex items-center gap-4 text-2xl lg:text-3xl">
           Olá <b className="text-blue-600 flex-1 overflow-clip">{user?.name}</b>
           <Notification/>

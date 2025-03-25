@@ -18,8 +18,9 @@ export const MenuBarDesktop = ({setMenuSelected, menuSelected }: MenuBarProps) =
   const {loading, logout} = useAuth()
 
     return(
-        <aside className="hidden p-4 bg-zinc-800/60 shadow-xl lg:flex lg:flex-col lg:gap-4 lg:w-[20%] lg:max-w-[300px] lg:h-dvh">
-          <div className="flex flex-col flex-1 gap-4">
+        <aside className="hidden pb-6 bg-zinc-800/60 shadow-xl lg:flex lg:items-center lg:flex-col lg:gap-4 lg:w-[20%] lg:max-w-[300px] lg:h-dvh">
+          <span className="text-2xl w-full font-bold border-b py-6 text-center mb-4"><b className="text-blue-700 underline underline-offset-8">WE</b> Barbearia</span>
+          <div className="flex flex-col flex-1 w-full">
             {pages.map((page) => (
                           <ButtonMenuBar.root
                             key={page}
@@ -33,9 +34,9 @@ export const MenuBarDesktop = ({setMenuSelected, menuSelected }: MenuBarProps) =
                         ))}
           </div>
           
-          <div>
+          <div className="w-full flex justify-center">
             {loading ? <Spinner/> :
-            <Button variant={"destructive"} className="bg-zinc-700 w-full h-10 cursor-pointer duration-200 ease-in-out hover:bg-red-700/80" onClick={logout}>
+            <Button variant={"destructive"} className="bg-zinc-700 w-[80%] h-10 cursor-pointer duration-200 ease-in-out hover:bg-red-700/80" onClick={logout}>
             LogOut
             <Icon name="LogOut" size={24} color="white"/>
             </Button>}
