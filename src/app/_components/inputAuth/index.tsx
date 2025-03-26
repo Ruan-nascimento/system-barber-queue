@@ -1,5 +1,5 @@
-import { RegisterForm } from "@/app/(pages)/auth/register/page"
 import { Input } from "@/components/ui/input"
+import { RegisterForm } from "@/lib/schemas/registerSchema"
 import { InputHTMLAttributes } from "react"
 import { FieldError, FieldErrors, UseFormRegister } from "react-hook-form"
 import { twMerge } from "tailwind-merge"

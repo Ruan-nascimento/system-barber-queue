@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -12,35 +11,15 @@ import { toast } from "sonner";
 import { InputAuth } from "@/app/_components/inputAuth";
 import { useAuth } from "@/lib/AuthContext";
 import { Spinner } from "@/app/_components/spinner";
-
-const registerSchema = z
-  .object({
-    name: z.string().min(1, "Nome é obrigatório"),
-    phone: z.string().min(1, "Telefone é Obrigatório"),
-    email: z.string().optional().refine((val) => !val || z.string().email().safeParse(val).success, {
-      message: "Email Inválido - exemplo@gmail.com",
-    }),
-    password: z
-      .string()
-      .min(8, "A Senha deve ter no mínimo 8 caracteres")
-      .max(20, "A Senha não deve conter mais que 20 caracteres")
-      .regex(/^[A-Za-z0-9]+$/, "A Senha deve conter apenas letras (A-Z) e números (0-9)"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "As senhas não coincidem",
-    path: ["confirmPassword"],
-  });
-
-type RegisterForm = z.infer<typeof registerSchema>;
+import { registerSchema, RegisterForm } from "@/lib/schemas/registerSchema"; // Importe aqui
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const newName = name && name[0].toUpperCase() + name.slice(1);
   const router = useRouter();
-  const { setUser, user, loading} = useAuth();
-  const [loadingRegister, setLoadingRegister] = useState<boolean>(false)
+  const { setUser, user, loading } = useAuth();
+  const [loadingRegister, setLoadingRegister] = useState<boolean>(false);
 
   const {
     register,
@@ -52,15 +31,13 @@ export default function RegisterPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      if(user.role === 'admin') {
-
+      if (user.role === "admin") {
         router.push(`${API_URL}/main/${user.id}`);
-      } else if (user.role === 'client') {
+      } else if (user.role === "client") {
         router.push(`${API_URL}/client/${user.id}`);
       }
     }
   }, [loading, user, router]);
-
 
   if (loading) {
     return (
@@ -71,7 +48,7 @@ export default function RegisterPage() {
   }
 
   const onSubmit = async (data: RegisterForm) => {
-    setLoadingRegister(true)
+    setLoadingRegister(true);
     try {
       const response = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
@@ -93,10 +70,10 @@ export default function RegisterPage() {
         name: result.name,
         phone: result.phone,
         email: result.email || null,
-        role: result.role
+        role: result.role,
       });
 
-      setLoadingRegister(false)
+      setLoadingRegister(false);
 
       toast.success("Cadastro concluído com sucesso!", {
         style: {
@@ -106,13 +83,13 @@ export default function RegisterPage() {
         },
       });
 
-      if (result.role === 'admin') {
-
-        router.push(`${API_URL}/main/${user?.id}`);
+      if (result.role === "admin") {
+        router.push(`${API_URL}/main/${result.id}`); // Use result.id
       } else {
-        router.push(`${API_URL}/client/${user?.id}`);
+        router.push(`${API_URL}/client/${result.id}`); // Use result.id
       }
     } catch (error: any) {
+      setLoadingRegister(false); // Garanta que o loading seja desativado em caso de erro
       toast.error(error.message || "Erro ao cadastrar", {
         style: {
           background: "#18181b",
@@ -194,15 +171,16 @@ export default function RegisterPage() {
             </label>
           </div>
 
-          {
-            loadingRegister ? <Spinner/> :
+          {loadingRegister ? (
+            <Spinner />
+          ) : (
             <Button
-            type="submit"
-            className="w-full bg-blue-600 text-zinc-100 hover:bg-blue-500 duration-200 ease-in-out cursor-pointer"
-          >
-            Registrar
-          </Button>
-          }
+              type="submit"
+              className="w-full bg-blue-600 text-zinc-100 hover:bg-blue-500 duration-200 ease-in-out cursor-pointer"
+            >
+              Registrar
+            </Button>
+          )}
         </form>
 
         <div className="mt-4 text-sm cursor-pointer">
@@ -213,9 +191,11 @@ export default function RegisterPage() {
       </div>
 
       <Button
-        onClick={e => router.push(`${API_URL}/`)}
+        onClick={() => router.push(`${API_URL}/`)}
         className="w-full min-w-[300px] max-w-md bg-zinc-700 duration-200 ease-in-out hover:bg-zinc-600 active:bg-zinc-500 cursor-pointer"
-        >Voltar</Button>
+      >
+        Voltar
+      </Button>
     </div>
   );
 }
