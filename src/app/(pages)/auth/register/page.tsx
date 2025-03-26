@@ -13,7 +13,7 @@ import { InputAuth } from "@/app/_components/inputAuth";
 import { useAuth } from "@/lib/AuthContext";
 import { Spinner } from "@/app/_components/spinner";
 
-export const registerSchema = z
+const registerSchema = z
   .object({
     name: z.string().min(1, "Nome é obrigatório"),
     phone: z.string().min(1, "Telefone é Obrigatório"),
@@ -32,7 +32,7 @@ export const registerSchema = z
     path: ["confirmPassword"],
   });
 
-export type RegisterForm = z.infer<typeof registerSchema>;
+type RegisterForm = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
