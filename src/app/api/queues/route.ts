@@ -1,36 +1,39 @@
-import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/utils";
+import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
-
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const barberId = searchParams.get("barberId");
-
-  if (!barberId) {
-    return NextResponse.json({ error: "barberId é obrigatório" }, { status: 400 });
-  }
-
+export async function POST(request: Request) {
   try {
-    const queues = await prisma.queue.findMany({
+    const { userId, barberId, serviceIds, estimatedTime } = await request.json();
+
+    const waitingCount = await prisma.queue.count({
       where: {
-        barberId: parseInt(barberId),
+        barberId,
         status: "waiting",
       },
-      include: {
-        user: { select: { name: true } },
+    });
+
+    const queue = await prisma.queue.create({
+      data: {
+        userId,
+        barberId,
+        status: "waiting",
+        position: waitingCount + 1,
+        estimatedTime,
         services: {
-          include: {
-            service: { select: { service: true, value: true } }, 
-          },
+          create: serviceIds.map((serviceId: number) => ({
+            serviceId,
+          })),
         },
       },
-      orderBy: { position: "asc" },
     });
-    return NextResponse.json(queues);
+
+    return NextResponse.json(queue, { status: 201 });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Erro ao buscar filas" }, { status: 500 });
+    console.error("Erro ao adicionar à fila:", error);
+    return NextResponse.json(
+      { error: "Erro ao adicionar à fila" },
+      { status: 500 }
+    );
   } finally {
     await prisma.$disconnect();
   }

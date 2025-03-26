@@ -22,6 +22,10 @@ export default function MainPage() {
   useEffect(() => {
     if (!loading && !user) {
       router.push(`${API_URL}/auth/login`)
+    } 
+
+    if (user?.role === 'client') {
+      router.push(`${API_URL}/client/${user.id}`)
     }
   }, [loading, user, router]);
 

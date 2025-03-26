@@ -11,8 +11,9 @@ import { API_URL } from "@/lib/utils";
 import { toast } from "sonner";
 import { InputAuth } from "@/app/_components/inputAuth";
 import { useAuth } from "@/lib/AuthContext";
+import { Spinner } from "@/app/_components/spinner";
 
-const registerSchema = z
+export const registerSchema = z
   .object({
     name: z.string().min(1, "Nome é obrigatório"),
     phone: z.string().min(1, "Telefone é Obrigatório"),
@@ -38,7 +39,8 @@ export default function RegisterPage() {
   const [name, setName] = useState<string>("");
   const newName = name && name[0].toUpperCase() + name.slice(1);
   const router = useRouter();
-  const { setUser, user, loading } = useAuth();
+  const { setUser, user, loading} = useAuth();
+  const [loadingRegister, setLoadingRegister] = useState<boolean>(false)
 
   const {
     register,
@@ -48,14 +50,18 @@ export default function RegisterPage() {
     resolver: zodResolver(registerSchema),
   });
 
-  // Redireciona se o usuário já estiver autenticado
   useEffect(() => {
     if (!loading && user) {
-      router.push(`${API_URL}/main/${user.id}`);
+      if(user.role === 'admin') {
+
+        router.push(`${API_URL}/main/${user.id}`);
+      } else if (user.role === 'client') {
+        router.push(`${API_URL}/client/${user.id}`);
+      }
     }
   }, [loading, user, router]);
 
-  // Enquanto carrega, mostra um estado de carregamento
+
   if (loading) {
     return (
       <div className="h-dvh w-screen flex items-center justify-center bg-zinc-900 text-zinc-200">
@@ -65,6 +71,7 @@ export default function RegisterPage() {
   }
 
   const onSubmit = async (data: RegisterForm) => {
+    setLoadingRegister(true)
     try {
       const response = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
@@ -86,7 +93,10 @@ export default function RegisterPage() {
         name: result.name,
         phone: result.phone,
         email: result.email || null,
+        role: result.role
       });
+
+      setLoadingRegister(false)
 
       toast.success("Cadastro concluído com sucesso!", {
         style: {
@@ -96,7 +106,12 @@ export default function RegisterPage() {
         },
       });
 
-      router.push(`${API_URL}/main/${result.id}`);
+      if (result.role === 'admin') {
+
+        router.push(`${API_URL}/main/${user?.id}`);
+      } else {
+        router.push(`${API_URL}/client/${user?.id}`);
+      }
     } catch (error: any) {
       toast.error(error.message || "Erro ao cadastrar", {
         style: {
@@ -179,12 +194,15 @@ export default function RegisterPage() {
             </label>
           </div>
 
-          <Button
+          {
+            loadingRegister ? <Spinner/> :
+            <Button
             type="submit"
             className="w-full bg-blue-600 text-zinc-100 hover:bg-blue-500 duration-200 ease-in-out cursor-pointer"
           >
             Registrar
           </Button>
+          }
         </form>
 
         <div className="mt-4 text-sm cursor-pointer">

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { HeaderQueuePage } from "./headerQueue"
 import { QueuesAdmin } from "./queuesAdmin"
+import { AddSomeOneInQueue } from "./addSomeOneInQueue"
 
 export const QueuePage = () => {
 
@@ -19,6 +20,13 @@ export const QueuePage = () => {
        {
         selected === 'queues' && (
             <QueuesAdmin/>
+        )
+
+       }
+
+       {
+        selected === 'add' && (
+            <AddSomeOneInQueue/>
         )
        }
 

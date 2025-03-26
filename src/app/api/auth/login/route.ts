@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
       name: user.name,
       phone: user.phone,
       email: user.email,
+      role: user.role
     });
 
     response.cookies.set("barberToken", token, {

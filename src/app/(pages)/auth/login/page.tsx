@@ -11,6 +11,7 @@ import { API_URL } from "@/lib/utils";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/AuthContext";
 import { InputAuthLogin } from "@/app/_components/InputAuthLogin";
+import { Spinner } from "@/app/_components/spinner";
 
 const loginSchema = z.object({
   identifier: z.string().min(1, "Email ou telefone é obrigatório"),
@@ -23,6 +24,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const router = useRouter();
   const { setUser, user, loading } = useAuth();
+  const [loadingLog, setLoadingLog] = useState<boolean>(false)
 
   const {
     register,
@@ -34,7 +36,12 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      router.push(`${API_URL}/main/${user.id}`);
+      if (user.role === 'admin') {
+
+        router.push(`${API_URL}/main/${user.id}`);
+      } else if (user.role === 'client') {
+        router.push(`${API_URL}/client/${user.id}`);
+      }
     }
   }, [loading, user, router]);
 
@@ -47,6 +54,7 @@ export default function LoginPage() {
   }
 
   const onSubmit = async (data: LoginForm) => {
+    setLoadingLog(true)
     try {
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
@@ -68,7 +76,10 @@ export default function LoginPage() {
         name: result.name,
         phone: result.phone,
         email: result.email || null,
+        role: result.role
       });
+
+      setLoadingLog(false)
 
       toast.success("Login realizado com sucesso!", {
         style: {
@@ -78,7 +89,13 @@ export default function LoginPage() {
         },
       });
 
-      router.push(`${API_URL}/main/${user?.id}`);
+      if (result.role === 'client') {
+        router.push(`${API_URL}/client/${user?.id}`);
+        
+      } else if (result.role === 'admin') {
+        router.push(`${API_URL}/main/${user?.id}`);
+      }
+      console.log(result.role)
     } catch (error: any) {
       toast.error(error.message || "Usuário não encontrado", {
         style: {
@@ -134,12 +151,15 @@ export default function LoginPage() {
             </label>
           </div>
 
-          <Button
+          {
+            loadingLog ? <Spinner/> :
+            <Button
             type="submit"
             className="w-full bg-blue-600 text-zinc-100 hover:bg-blue-500 duration-200 ease-in-out cursor-pointer disabled:bg-blue-400 disabled:cursor-not-allowed"
           >
               Entrar
           </Button>
+          }
         </form>
 
         <div className="mt-4 text-sm cursor-pointer">
