@@ -46,7 +46,7 @@ export function QueueTable({ data, onUpdate }: QueueProps & { onUpdate: () => vo
         throw new Error(errorData.error || "Erro ao concluir");
       }
 
-      onUpdate(); // Atualiza a lista após a ação
+      onUpdate();
     } catch (error) {
       console.error("Erro ao concluir:", error);
     }
@@ -54,26 +54,26 @@ export function QueueTable({ data, onUpdate }: QueueProps & { onUpdate: () => vo
 
   const handleRemove = async (queueId: string) => {
     try {
-      const response = await fetch(`${API_URL}/api/queues/delete`, {
-        method: "DELETE",
+      const response = await fetch(`${API_URL}/api/queues/recuse`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ queueId }),
+        body: JSON.stringify({ queueId }), 
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Erro ao remover");
+        throw new Error(errorData.error || "Erro ao marcar como concluído");
       }
 
       onUpdate();
     } catch (error) {
-      console.error("Erro ao remover:", error);
+      console.error("Erro ao marcar como concluído:", error);
     }
   };
 
-  useEffect(()=> {
-    console.log(data)
-  })
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   return (
     <div className="rounded-md border">
@@ -150,7 +150,7 @@ export function QueueTable({ data, onUpdate }: QueueProps & { onUpdate: () => vo
                     <Button
                       variant="ghost"
                       size="sm"
-                      title="remove"
+                      title="Marcar como concluído"
                       className="bg-red-500 ease-in-out duration-200 cursor-pointer hover:bg-red-600 active:bg-red-700/50"
                       onClick={() => handleRemove(item.id)}
                     >
