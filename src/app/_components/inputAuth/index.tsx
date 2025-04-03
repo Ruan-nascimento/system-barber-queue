@@ -26,7 +26,7 @@ export const InputAuth = ({showPassword, text, errors, message, register, id, ty
             type={showPassword ? "text" : `${type}`}
             {...register(id)}
             {...rest}
-            className={twMerge("w-full p-2 bg-zinc-700 text-zinc-200 border border-zinc-600 rounded focus:outline-none focus:ring-2 focus:ring-zinc-500", rest.className)}
+            className={twMerge("w-full px-2 bg-zinc-200 h-10 text-zinc-900 border border-orange-300 rounded-full focus:outline-none focus:ring-1 focus:ring-orange-500 placeholder:text-zinc-900/60 pl-4", rest.className)}
             />
 
             {errors && <p className="text-red-400 text-sm mt-1">{message}</p>}

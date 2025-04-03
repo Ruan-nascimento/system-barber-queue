@@ -12,6 +12,12 @@ import { InputAuth } from "@/app/_components/inputAuth";
 import { useAuth } from "@/lib/AuthContext";
 import { Spinner } from "@/app/_components/spinner";
 import { registerSchema, RegisterForm } from "@/lib/schemas/registerSchema"; // Importe aqui
+import { AuthWrapper } from "@/app/_components/authWrapper";
+import Image from "next/image";
+import { ButtonComp } from "@/app/_components/buttonPattern";
+import { ArrowLeft } from "lucide-react";
+import { UserNotFounded } from "@/app/_components/toasts/error";
+import { Success } from "@/app/_components/toasts/success";
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -75,39 +81,34 @@ export default function RegisterPage() {
 
       setLoadingRegister(false);
 
-      toast.success("Cadastro concluído com sucesso!", {
-        style: {
-          background: "#18181b",
-          color: "#e4e4e7",
-          border: "1px solid #52525b",
-        },
-      });
+      Success({text: `Seja Bem Vindo(a) ${result.name}`})
 
       if (result.role === "admin") {
-        router.push(`${API_URL}/main/${result.id}`); // Use result.id
+        router.push(`${API_URL}/main/${result.id}`);
       } else {
-        router.push(`${API_URL}/client/${result.id}`); // Use result.id
+        router.push(`${API_URL}/client/${result.id}`);
       }
     } catch (error: any) {
-      setLoadingRegister(false); // Garanta que o loading seja desativado em caso de erro
-      toast.error(error.message || "Erro ao cadastrar", {
-        style: {
-          background: "#18181b",
-          color: "#e4e4e7",
-          border: "1px solid #52525b",
-        },
-      });
+      setLoadingRegister(false)
+      UserNotFounded({error})
     }
   };
 
   return (
-    <div className="h-dvh w-screen flex flex-col gap-4 px-4 items-center justify-center bg-zinc-900 text-zinc-200">
-      <div className="w-full min-w-[300px] max-w-md p-6 bg-zinc-800 rounded-lg shadow-lg">
+    <AuthWrapper className="flex-row gap-4">
+
+      <div
+      className="w-full md:w-[60%] md:max-w-[450px] flex flex-col justify-center items-center lg:p-6"
+      >
+        <span 
+        onClick={(e) => router.push(`${API_URL}/`)}
+        className="absolute cursor-pointer ease-in-out duration-200 hover:bg-orange-500 active:bg-orange-500/50 left-4 -top-36 lg:top-4 bg-zinc-600 p-2 rounded-lg"><ArrowLeft/></span>
+
         <h1 className="text-2xl font-bold text-zinc-100 mb-6 text-center">
           {name ? `Bem Vindo ${newName}!` : "Seja Nosso Cliente!"}
         </h1>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 lg:space-y-2 w-full">
           <InputAuth
             onChange={(e) => setName(e.target.value)}
             value={name}
@@ -174,28 +175,31 @@ export default function RegisterPage() {
           {loadingRegister ? (
             <Spinner />
           ) : (
-            <Button
+            <ButtonComp.root
               type="submit"
-              className="w-full bg-blue-600 text-zinc-100 hover:bg-blue-500 duration-200 ease-in-out cursor-pointer"
             >
               Registrar
-            </Button>
+            </ButtonComp.root>
           )}
         </form>
 
         <div className="mt-4 text-sm cursor-pointer">
           <Link href={`${API_URL}/auth/login`}>
-            Já tem uma Conta? <b className="text-blue-500">Entrar</b>
+            Já tem uma Conta? <b className="text-orange-500">Entrar</b>
           </Link>
         </div>
-      </div>
+        </div>
 
-      <Button
-        onClick={() => router.push(`${API_URL}/`)}
-        className="w-full min-w-[300px] max-w-md bg-zinc-700 duration-200 ease-in-out hover:bg-zinc-600 active:bg-zinc-500 cursor-pointer"
-      >
-        Voltar
-      </Button>
-    </div>
+        <div className="hidden xl:bg-[url('/bg_alternative.svg')] xl:h-full xl:bg-no-repeat xl:bg-center xl:bg-cover xl:flex-1 xl:flex xl:items-center xl:justify-center xl:rounded-4xl xl:shadow-lg">
+        
+            <Image
+            src={'/img/barber_logo.png'}
+            alt="Logo da Barbearia"
+            width={450}
+            height={450}
+            />
+        </div>
+        </AuthWrapper>
+    
   );
 }

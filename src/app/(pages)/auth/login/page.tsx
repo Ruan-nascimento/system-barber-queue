@@ -1,29 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { API_URL } from "@/lib/utils";
-import { toast } from "sonner";
-import { useAuth } from "@/lib/AuthContext";
-import { InputAuthLogin } from "@/app/_components/InputAuthLogin";
-import { Spinner } from "@/app/_components/spinner";
-
-const loginSchema = z.object({
-  identifier: z.string().min(1, "Email ou telefone é obrigatório"),
-  password: z.string().min(1, "Senha é obrigatória"),
-});
-
-export type LoginForm = z.infer<typeof loginSchema>;
+import { useState, useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { API_URL } from "@/lib/utils"
+import { useAuth } from "@/lib/AuthContext"
+import { InputAuthLogin } from "@/app/_components/InputAuthLogin"
+import { Spinner } from "@/app/_components/spinner"
+import Image from "next/image"
+import { ArrowLeft } from "lucide-react"
+import { ButtonComp } from "@/app/_components/buttonPattern"
+import { AuthWrapper } from "@/app/_components/authWrapper"
+import { Success } from "@/app/_components/toasts/success"
+import { UserNotFounded } from "@/app/_components/toasts/error"
+import { loginSchema, LoginForm } from "@/lib/schemas/loginSchema"
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const router = useRouter();
-  const { setUser, user, loading } = useAuth();
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const router = useRouter()
+  const { setUser, user, loading } = useAuth()
   const [loadingLog, setLoadingLog] = useState<boolean>(false)
 
   const {
@@ -31,24 +28,24 @@ export default function LoginPage() {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema),
-  });
+    resolver: zodResolver(loginSchema), 
+  })
 
   useEffect(() => {
     if (!loading && user) {
-      if (user.role === 'admin') {
-
-        router.push(`${API_URL}/main/${user.id}`);
-      } else if (user.role === 'client') {
-        router.push(`${API_URL}/client/${user.id}`);
+      if (user.role === "admin") {
+        router.push(`${API_URL}/main/${user.id}`)
+      } else if (user.role === "client") {
+        router.push(`${API_URL}/client/${user.id}`)
       }
     }
-  }, [loading, user, router]);
+  }, [loading, user, router])
 
   if (loading) {
     return (
       <div className="h-dvh w-screen flex items-center justify-center bg-zinc-900 text-zinc-200">
         <p>Carregando...</p>
+        <Spinner />
       </div>
     );
   }
@@ -63,12 +60,13 @@ export default function LoginPage() {
         },
         body: JSON.stringify(data),
         credentials: "include",
-      });
+      })
 
-      const result = await response.json();
+      const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(result.error || "Erro ao fazer login");
+        setLoadingLog(false);
+        throw new Error(result.error || "Erro ao fazer login")
       }
 
       setUser({
@@ -76,69 +74,69 @@ export default function LoginPage() {
         name: result.name,
         phone: result.phone,
         email: result.email || null,
-        role: result.role
-      });
+        role: result.role,
+      })
 
       setLoadingLog(false)
 
-      toast.success("Login realizado com sucesso!", {
-        style: {
-          background: "#18181b",
-          color: "#e4e4e7",
-          border: "1px solid #52525b",
-        },
-      });
+      Success({ text: `Login Bem Sucedido, Seja Bem Vindo(a) ${result.name}` })
 
-      if (result.role === 'client') {
-        router.push(`${API_URL}/client/${user?.id}`);
-        
-      } else if (result.role === 'admin') {
-        router.push(`${API_URL}/main/${user?.id}`);
+      if (result.role === "client") {
+        router.push(`${API_URL}/client/${user?.id}`)
+      } else if (result.role === "admin") {
+        router.push(`${API_URL}/main/${user?.id}`)
       }
-      console.log(result.role)
     } catch (error: any) {
-      toast.error(error.message || "Usuário não encontrado", {
-        style: {
-          background: "#18181b",
-          color: "#e4e4e7",
-          border: "1px solid #52525b",
-        }
-      });
+      setLoadingLog(false);
+      UserNotFounded({ error })
     }
   };
 
   return (
-    <div className="h-dvh w-screen flex flex-col gap-2 px-4 items-center justify-center bg-zinc-900 text-zinc-200">
+    <AuthWrapper>
+      <div
+        className="w-full xl:w-[50%] min-w-[300px] flex flex-col justify-center items-center relative max-h-[60%] lg:max-h-full lg:h-full"
+      >
+        <span
+          onClick={(e) => router.push(`${API_URL}/`)}
+          className="absolute cursor-pointer ease-in-out duration-200 hover:bg-orange-500 active:bg-orange-500/50 left-0 -top-36 lg:top-0 bg-zinc-600 p-2 rounded-lg"
+        >
+          <ArrowLeft />
+        </span>
 
-      <div className="w-full min-w-[300px] max-w-md p-6 bg-zinc-800 rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold text-zinc-100 mb-6 text-center">
-          Faça Login
+        <Image
+          src={'/img/barber_logo.png'}
+          alt="Logo da barbearia"
+          width={100}
+          height={100}
+          className="mb-2"
+        />
+        <h1 className="text-2xl font-bold text-zinc-100 mb-6 font-inter text-center">
+          Bem Vindo de Volta!
         </h1>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full lg:w-[70%]">
+          <InputAuthLogin
+            errors={errors.identifier}
+            message={errors.identifier?.message}
+            id="identifier"
+            register={register}
+            type="text"
+            text="Email ou Telefone"
+            placeholder="Digite seu email ou telefone"
+          />
+          <InputAuthLogin
+            errors={errors.password}
+            message={errors.password?.message}
+            id="password"
+            register={register}
+            type={showPassword ? "text" : "password"}
+            text="Senha"
+            placeholder="Digite sua senha"
+            showPassword={showPassword}
+          />
 
-            <InputAuthLogin
-                errors={errors.identifier}
-                message={errors.identifier?.message}
-                id="identifier"
-                register={register}
-                type="text"
-                text="Email ou Telefone"
-                placeholder="Digite seu email ou telefone"
-            />
-            <InputAuthLogin
-                errors={errors.password}
-                message={errors.password?.message}
-                id="password"
-                register={register}
-                type={showPassword ? "text" : "password"}
-                text="Senha"
-                placeholder="Digite sua senha"
-                showPassword={showPassword}
-            />
-          
-
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 w-full">
             <input
               type="checkbox"
               id="showPassword"
@@ -151,28 +149,32 @@ export default function LoginPage() {
             </label>
           </div>
 
-          {
-            loadingLog ? <Spinner/> :
-            <Button
-            type="submit"
-            className="w-full bg-blue-600 text-zinc-100 hover:bg-blue-500 duration-200 ease-in-out cursor-pointer disabled:bg-blue-400 disabled:cursor-not-allowed"
-          >
+          {loadingLog ? (
+            <Spinner />
+          ) : (
+            <ButtonComp.root type="submit">
               Entrar
-          </Button>
-          }
+            </ButtonComp.root>
+          )}
         </form>
 
         <div className="mt-4 text-sm cursor-pointer">
           <Link href={`${API_URL}/auth/register`}>
-            Não tem uma conta? <b className="text-blue-500">Registrar</b>
+            Não tem uma conta? <b className="text-orange-500">Registrar</b>
           </Link>
         </div>
       </div>
 
-      <Button
-        onClick={e => router.push(`${API_URL}/`)}
-        className="w-full min-w-[300px] max-w-md bg-zinc-700 duration-200 ease-in-out hover:bg-zinc-600 active:bg-zinc-500 cursor-pointer"
-        >Voltar</Button>
-    </div>
+      <div
+        className="hidden xl:bg-[url('/bg_alternative.svg')] xl:h-full xl:bg-no-repeat xl:bg-center xl:bg-cover xl:flex-1 xl:flex xl:items-center xl:justify-center xl:rounded-4xl xl:shadow-lg"
+      >
+        <Image
+          src={'/img/barber_logo.png'}
+          alt="Logo da Barbearia"
+          width={450}
+          height={450}
+        />
+      </div>
+    </AuthWrapper>
   );
 }

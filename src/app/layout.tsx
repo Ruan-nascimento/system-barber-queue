@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google"; 
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/AuthContext";
+
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
+
 
 export const metadata: Metadata = {
   title: "Barber App",
@@ -21,10 +23,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased`}>
+      <body className={` ${inter.variable} antialiased`}>
         <AuthProvider>
           {children}
-          <Toaster richColors position="top-right" /> 
+          <Toaster richColors position="top-right" />
         </AuthProvider>
       </body>
     </html>
