@@ -95,15 +95,18 @@ export default function LoginPage() {
 
   return (
     <AuthWrapper>
-      <div
-        className="w-full xl:w-[50%] min-w-[300px] flex flex-col justify-center items-center relative max-h-[60%] lg:max-h-full lg:h-full"
-      >
+
         <span
           onClick={(e) => router.push(`${API_URL}/`)}
-          className="absolute cursor-pointer ease-in-out duration-200 hover:bg-orange-500 active:bg-orange-500/50 left-0 top-0 bg-zinc-600 p-2 rounded-lg"
+          className="absolute cursor-pointer ease-in-out duration-200 hover:bg-orange-500 active:bg-orange-500/50 left-4 top-4 bg-zinc-600 p-2 rounded-lg"
         >
           <ArrowLeft />
         </span>
+
+      <div
+        className="w-full xl:w-[50%] min-w-[300px] flex flex-col justify-center items-center relative max-h-[60%] lg:max-h-full lg:h-full"
+      >
+        
 
         <Image
           src={'/img/barber_logo.png'}
