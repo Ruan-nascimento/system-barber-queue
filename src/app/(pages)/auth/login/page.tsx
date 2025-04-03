@@ -83,7 +83,7 @@ export default function LoginPage() {
       Success({ text: `Login Bem Sucedido, Seja Bem Vindo(a) ${result.name}` })
 
       if (result.role === "client") {
-        router.push(`${API_URL}/client/${user?.id}`)
+        router.push(`${API_URL}/main/${user?.id}`)
       } else if (result.role === "admin") {
         router.push(`${API_URL}/main/${user?.id}`)
       }

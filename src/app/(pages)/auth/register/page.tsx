@@ -83,7 +83,7 @@ export default function RegisterPage() {
       if (result.role === "admin") {
         router.push(`${API_URL}/main/${result.id}`);
       } else {
-        router.push(`${API_URL}/client/${result.id}`);
+        router.push(`${API_URL}/main/${result.id}`);
       }
     } catch (error: any) {
       setLoadingRegister(false)

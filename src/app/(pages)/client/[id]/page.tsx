@@ -1,6 +1,5 @@
 'use client'
 
-import { JoinTheQueue } from "@/app/_components/main/pages/client/JoinTheQueue";
 import { useAuth } from "@/lib/AuthContext";
 import { API_URL } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -22,7 +21,6 @@ export default function ClientMainPage() {
     return(
         <div className="w-screen h-dvh bg-zinc-800 text-zinc-200">
             <div className="w-full h-full flex bg-zinc-900 justify-around items-center">
-            <JoinTheQueue/>
             <button onClick={logout} className="w-32 h-10 bg-red-600">
                 Sair
             </button>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
 import { motion, AnimatePresence } from "framer-motion"
 import { Spinner } from "@/app/_components/spinner";
-import { QueueAdminPage } from "@/app/_components/Main-pages/queue";
+import { QueueAdminPage } from "@/app/_components/main/Main-pages/queue";
 import { NavBarMainPage } from "@/app/_components/main/navigationBar";
 import { API_URL } from "@/lib/utils";
 import { LogOutIcon, MenuIcon } from "lucide-react";
