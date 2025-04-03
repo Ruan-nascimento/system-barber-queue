@@ -100,7 +100,7 @@ export default function LoginPage() {
       >
         <span
           onClick={(e) => router.push(`${API_URL}/`)}
-          className="absolute cursor-pointer ease-in-out duration-200 hover:bg-orange-500 active:bg-orange-500/50 left-0 -top-36 lg:top-0 bg-zinc-600 p-2 rounded-lg"
+          className="absolute cursor-pointer ease-in-out duration-200 hover:bg-orange-500 active:bg-orange-500/50 left-0 top-0 bg-zinc-600 p-2 rounded-lg"
         >
           <ArrowLeft />
         </span>

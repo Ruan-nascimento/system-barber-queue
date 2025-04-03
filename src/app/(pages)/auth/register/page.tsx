@@ -102,7 +102,7 @@ export default function RegisterPage() {
       >
         <span 
         onClick={(e) => router.push(`${API_URL}/`)}
-        className="absolute cursor-pointer ease-in-out duration-200 hover:bg-orange-500 active:bg-orange-500/50 left-4 -top-36 lg:top-4 bg-zinc-600 p-2 rounded-lg"><ArrowLeft/></span>
+        className="absolute cursor-pointer ease-in-out duration-200 hover:bg-orange-500 active:bg-orange-500/50 left-4 top-4 bg-zinc-600 p-2 rounded-lg"><ArrowLeft/></span>
 
         <h1 className="text-2xl font-bold text-zinc-100 mb-6 text-center">
           {name ? `Bem Vindo ${newName}!` : "Seja Nosso Cliente!"}
