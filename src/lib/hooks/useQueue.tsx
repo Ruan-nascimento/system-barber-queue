@@ -73,7 +73,7 @@ export const useQueue = () => {
 
     const interval = setInterval(() => {
       fetchData();
-    }, 1000);
+    }, 20000);
 
     return () => clearInterval(interval);
   }, []);

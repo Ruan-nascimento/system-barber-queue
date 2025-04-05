@@ -2,6 +2,8 @@ import { ColumnDef, ColumnMeta } from "@tanstack/react-table";
 import { QueueEntry } from "@/lib/hooks/useQueue";
 import { Button } from "@/components/ui/button";
 import { Check, ArrowDown, X, Eye } from "lucide-react";
+import * as emoji from "node-emoji";
+import { Message } from "../messages/messages";
 
 interface CustomColumnMeta<TData, TValue> extends ColumnMeta<TData, TValue> {
   responsive?: {
@@ -14,19 +16,44 @@ const calculateTotalPrice = (queueServices: QueueEntry["queueServices"]) => {
 };
 
 const formatPhoneForWhatsApp = (phone: string) => {
-    const cleanedPhone = phone.replace(/[\s()-]/g, "");
-    
-    if (!cleanedPhone.startsWith("+")) {
-      return `+55${cleanedPhone}`;
-    }
-    return cleanedPhone;
-  };
+  const cleanedPhone = phone.replace(/[\s()-]/g, "");
+  if (!cleanedPhone.startsWith("+")) {
+    return `+55${cleanedPhone}`;
+  }
+  return cleanedPhone;
+};
 
-const createWhatsAppLink = (phone: string, userName: string) => {
-    const formattedPhone = formatPhoneForWhatsApp(phone);
-    const message = `Olá ${userName}, passando aqui pra te avisar que é sua vez de fazer o serviço, consegue vir em até 15 minutos?`;
-    const encodedMessage = encodeURIComponent(message);
-    return `https://wa.me/${formattedPhone}?text=${encodedMessage}`;
+
+const getGreetingByTime = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return emoji.emojify(":sunny: Bom dia");
+  if (hour < 18) return emoji.emojify(":city_sunset: Boa tarde");
+  return emoji.emojify(":moon: Boa noite");
+};
+
+const createCustomWhatsAppMessage = (
+  userName: string,
+  queueServices: QueueEntry["queueServices"]
+) => {
+  const greeting = getGreetingByTime();
+  const servicesList = queueServices
+    .map((qs) => `*- ${qs.service.name}*`)
+    .join("\n");
+
+  const message = Message({userName, greeting, servicesList})
+
+  return message;
+};
+
+const createWhatsAppLink = (
+  phone: string,
+  userName: string,
+  queueServices: QueueEntry["queueServices"]
+) => {
+  const formattedPhone = formatPhoneForWhatsApp(phone);
+  const message = createCustomWhatsAppMessage(userName, queueServices);
+  const encodedMessage = encodeURIComponent(message);
+  return `https://web.whatsapp.com/send?phone=${formattedPhone.replace("+", "")}&text=${encodedMessage}`;
 };
 
 export const columns: ColumnDef<QueueEntry, any>[] = [
@@ -40,7 +67,11 @@ export const columns: ColumnDef<QueueEntry, any>[] = [
   {
     accessorFn: (row) => row.user.name,
     header: "Nome",
-    cell: ({ row }) => <span className="ease-in-out duration-200 hover:text-orange-500 hover:underline underline-offset-4 cursor-pointer">{row.original.user.name}</span>,
+    cell: ({ row }) => (
+      <span className="ease-in-out duration-200 hover:text-orange-500 hover:underline underline-offset-4 cursor-pointer">
+        {row.original.user.name}
+      </span>
+    ),
     size: 150,
     meta: { responsive: {} } as CustomColumnMeta<QueueEntry, any>,
   },
@@ -50,7 +81,8 @@ export const columns: ColumnDef<QueueEntry, any>[] = [
     cell: ({ row }) => {
       const phone = row.original.user.phone;
       const userName = row.original.user.name;
-      const whatsappLink = createWhatsAppLink(phone, userName);
+      const queueServices = row.original.queueServices;
+      const whatsappLink = createWhatsAppLink(phone, userName, queueServices);
       return (
         <a
           href={whatsappLink}

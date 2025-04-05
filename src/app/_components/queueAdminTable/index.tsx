@@ -1,4 +1,4 @@
-// src/app/_components/layouts/queueAdmin/QueueAdminTable.tsx
+import { useMemo } from "react";
 import { useQueue, QueueEntry } from "@/lib/hooks/useQueue";
 import {
   Table,
@@ -11,10 +11,12 @@ import {
 import {
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
   ColumnDef,
 } from "@tanstack/react-table";
 import { columns } from "./columns";
+import { Spinner } from "../spinner";
 
 interface CustomColumnMeta<TData, TValue> {
   responsive?: {
@@ -29,16 +31,37 @@ interface QueueAdminTableProps {
 export const QueueAdminTable = ({ selectedBarber }: QueueAdminTableProps) => {
   const { queueEntries, loading, error, refetch } = useQueue();
 
-  const filteredEntries = selectedBarber
-    ? queueEntries.filter((entry) => entry.barberId === selectedBarber)
-    : queueEntries;
+  // Memoize filteredEntries para evitar recalcular desnecessariamente
+  const filteredEntries = useMemo(() => {
+    if (!queueEntries) return [];
+    return selectedBarber
+      ? queueEntries.filter((entry) => entry.barberId === selectedBarber)
+      : queueEntries;
+  }, [queueEntries, selectedBarber]);
 
+  // Configuração do useReactTable com paginação
   const table = useReactTable({
     data: filteredEntries,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 10, // Limita a 10 linhas por página
+      },
+    },
   });
 
+  // Estado de carregamento
+  if (loading) {
+    return (
+      <div className="flex justify-center py-10">
+        <Spinner />
+      </div>
+    );
+  }
+
+  // Estado de erro
   if (error) {
     return (
       <div className="p-4 text-center text-red-500">
@@ -59,24 +82,29 @@ export const QueueAdminTable = ({ selectedBarber }: QueueAdminTableProps) => {
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="bg-zinc-900">
-              {headerGroup.headers.map((header) => (
-                <TableHead
-                  key={header.id}
-                  className={`px-4 py-2 text-left text-sm font-medium text-white ${
-                    (header.column.columnDef.meta as CustomColumnMeta<QueueEntry, any>)?.responsive?.hideOnMobile
-                      ? "hidden md:table-cell"
-                      : ""
-                  }`}
-                  style={{ width: header.column.columnDef.size }}
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </TableHead>
-              ))}
+              {headerGroup.headers.map((header) => {
+                const hideOnMobile =
+                  (header.column.columnDef.meta as CustomColumnMeta<
+                    QueueEntry,
+                    any
+                  >)?.responsive?.hideOnMobile ?? false;
+                return (
+                  <TableHead
+                    key={header.id}
+                    className={`px-4 py-2 text-left text-sm font-medium text-white ${
+                      hideOnMobile ? "hidden md:table-cell" : ""
+                    }`}
+                    style={{ width: header.column.columnDef.size }}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                );
+              })}
             </TableRow>
           ))}
         </TableHeader>
@@ -85,31 +113,60 @@ export const QueueAdminTable = ({ selectedBarber }: QueueAdminTableProps) => {
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                className="border-b ease-in-out duration-200 border-gray-200/50 hover:bg-zinc-800"
+                className="border-b border-gray-200/50 hover:bg-zinc-800"
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className={`px-4 py-2 text-sm text-white ${
-                      (cell.column.columnDef.meta as CustomColumnMeta<QueueEntry, any>)?.responsive?.hideOnMobile
-                        ? "hidden md:table-cell"
-                        : ""
-                    }`}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+                {row.getVisibleCells().map((cell) => {
+                  const hideOnMobile =
+                    (cell.column.columnDef.meta as CustomColumnMeta<
+                      QueueEntry,
+                      any
+                    >)?.responsive?.hideOnMobile ?? false;
+                  return (
+                    <TableCell
+                      key={cell.id}
+                      className={`px-4 py-2 text-sm text-white ${
+                        hideOnMobile ? "hidden md:table-cell" : ""
+                      }`}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="py-4 text-center text-gray-500">
+              <TableCell
+                colSpan={columns.length}
+                className="py-4 text-center text-gray-500"
+              >
                 Nenhuma entrada na fila.
               </TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
+
+      {/* Controles de paginação */}
+      <div className="flex justify-end gap-2 p-4">
+        <button
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+          className="px-4 py-2 text-white bg-zinc-800 rounded disabled:opacity-50"
+        >
+          Anterior
+        </button>
+        <button
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+          className="px-4 py-2 text-white bg-zinc-800 rounded disabled:opacity-50"
+        >
+          Próximo
+        </button>
+      </div>
     </div>
   );
 };
