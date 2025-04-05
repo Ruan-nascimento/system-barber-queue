@@ -1,32 +1,61 @@
 
 import { PageSelected } from "@/app/(pages)/main/[id]/page"
 import { ButtonNavigationBar } from "./buttonNavigationBar"
-import { Clock, Home } from "lucide-react"
+import { CalendarClock, Clock, Home, PanelBottom } from "lucide-react"
+import { twMerge } from "tailwind-merge"
+import Image from "next/image"
+import { ButtonAccount } from "../../buttonAccount"
+import { useQueue } from "@/lib/hooks/useQueue"
 
 interface NavBarMainPageProps {
     page: PageSelected
     setPage: (val: PageSelected) => void
+    className?: string
 }
 
-export const NavBarMainPage = ({page, setPage}:NavBarMainPageProps) => {
+export const NavBarMainPage = ({page, setPage, ...rest}:NavBarMainPageProps) => {
+
+    const {queueEntries} = useQueue()
+
     return(
         <nav
-        className="flex flex-col min-w-[200px] gap-4 absolute top-0 left-0 w-full bg-zinc-950/60 border-r-orange-500 border-r py-6 h-full px-2 "
+        className={twMerge(`flex items-center justify-between flex-col min-w-[300px] gap-4 w-full bg-[#020501] border-r-white/30 border-r py-6 h-full px-6`, rest.className)}
         >   
+            <div className="w-full flex items-center flex-col gap-4">
+                <Image
+                src={'/img/barber_logo.png'}
+                alt="Logo da Barbearia"
+                width={100}
+                height={100}
+                className="mb-10"
+                />
 
-            <ButtonNavigationBar ord="queue" page={page}
-            onClick={() => setPage("queue")}
-            >
-                <Clock/>
-                Queue
-            </ButtonNavigationBar>
 
-            <ButtonNavigationBar ord="dashboard" page={page}
-            onClick={() => setPage('dashboard')}
-            >
-                <Home/>
-                Dashboard
-            </ButtonNavigationBar>
+                <ButtonNavigationBar ord="dashboard" page={page}
+                onClick={() => setPage('dashboard')}
+                >
+                    <PanelBottom/>
+                    Painel
+                </ButtonNavigationBar>
+
+                <ButtonNavigationBar ord="queue" page={page} notify={queueEntries.length}
+                onClick={() => setPage("queue")}
+                >
+                    <Clock/>
+                    Fila
+                </ButtonNavigationBar>
+
+                <ButtonNavigationBar ord="history" page={page}
+                onClick={() => setPage('history')}
+                >
+                    <CalendarClock/>
+                    Histórico
+                </ButtonNavigationBar>
+            </div>
+
+
+
+            <ButtonAccount className="hidden lg:w-full lg:flex"/>
             
 
         </nav>
