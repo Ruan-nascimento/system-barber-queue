@@ -18,11 +18,10 @@ export default function MainPage() {
   const [page, setPage] = useState<PageSelected>("queue")
   const [openSide, setOpenSide] = useState<boolean>(false)
 
-
   useEffect(() => {
     if (!loading && !user) {
       router.push(`${API_URL}/auth/login`)
-    } 
+    }
 
     if (user?.role === 'client') {
       router.push(`${API_URL}/client/${user.id}`)
@@ -39,9 +38,9 @@ export default function MainPage() {
   }
 
   return (
+    
     <div className="relative h-dvh w-screen flex flex-col lg:flex-row items-center justify-start bg-[#0a0a0a] text-white">
-      
-      {/* Barra de Navegação...Mobile */}
+
 
       <AnimatePresence>
         {openSide && (

@@ -32,7 +32,7 @@ export const ModalAccountButton = ({setOpenModalAccount, openModalAccount}:Modal
     return (
         <div
         ref={modalRef}
-        className="absolute lg:-top-[310%] top-16 right-4 lg:w-full lg:left-0 w-[200px] rounded-lg border-white border bg-zinc-950 p-4 flex flex-col gap-3"
+        className="absolute z-50 lg:-top-[310%] top-16 right-4 lg:w-full lg:left-0 w-[200px] rounded-lg border-white border bg-zinc-950 p-4 flex flex-col gap-3"
         >
             <button 
             className="flex items-center gap-6 px-4 py-3 justify-center cursor-pointer bg-zinc-800/70 rounded-2xl duration-200 ease-in-out hover:bg-zinc-600">

@@ -1,58 +1,57 @@
 "use client";
 
-import { useState, useEffect } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { API_URL } from "@/lib/utils"
-import { useAuth } from "@/lib/AuthContext"
-import { InputAuthLogin } from "@/app/_components/InputAuthLogin"
-import { Spinner } from "@/app/_components/spinner"
-import Image from "next/image"
-import { ArrowLeft } from "lucide-react"
-import { ButtonComp } from "@/app/_components/buttonPattern"
-import { AuthWrapper } from "@/app/_components/authWrapper"
-import { Success } from "@/app/_components/toasts/success"
-import { UserNotFounded } from "@/app/_components/toasts/error"
-import { loginSchema, LoginForm } from "@/lib/schemas/loginSchema"
-
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { API_URL } from "@/lib/utils";
+import { useAuth } from "@/lib/AuthContext";
+import { InputAuthLogin } from "@/app/_components/InputAuthLogin";
+import { Spinner } from "@/app/_components/spinner";
+import Image from "next/image";
+import { ArrowLeft } from "lucide-react";
+import { ButtonComp } from "@/app/_components/buttonPattern";
+import { AuthWrapper } from "@/app/_components/authWrapper";
+import { Success } from "@/app/_components/toasts/success";
+import { UserNotFounded } from "@/app/_components/toasts/error";
+import { loginSchema, LoginForm } from "@/lib/schemas/loginSchema";
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const router = useRouter()
-  const { setUser, user, loading } = useAuth()
-  const [loadingLog, setLoadingLog] = useState<boolean>(false)
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+  const { setUser, user, loading } = useAuth();
+  const [loadingLog, setLoadingLog] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema), 
-  })
+    resolver: zodResolver(loginSchema),
+  });
 
   useEffect(() => {
-    if (!loading && user) {
-      if (user.role === "admin") {
-        router.push(`${API_URL}/main/${user.id}`)
-      } else if (user.role === "client") {
-        router.push(`${API_URL}/client/${user.id}`)
-      }
+    if (user) {
+      router.push(`${API_URL}/main/${user.id}`);
     }
-  }, [loading, user, router])
+  }, [loading, user, router]);
 
   if (loading) {
     return (
-      <div className="h-dvh w-screen flex items-center justify-center bg-zinc-900 text-zinc-200">
-        <p>Carregando...</p>
+      <div className="h-dvh w-screen flex items-center justify-center bg-zinc-900 text-zinc-200 flex-col gap-10">
+        <p className="text-2xl font-bold">Carregando...</p>
         <Spinner />
       </div>
     );
   }
 
+  if (user) {
+    return <span className="flex items-center justify-center flex-col gap-4">Redirecionando... <Spinner/></span>
+  }
+
   const onSubmit = async (data: LoginForm) => {
-    setLoadingLog(true)
+    setLoadingLog(true);
     try {
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
@@ -61,13 +60,13 @@ export default function LoginPage() {
         },
         body: JSON.stringify(data),
         credentials: "include",
-      })
+      });
 
-      const result = await response.json()
+      const result = await response.json();
 
       if (!response.ok) {
         setLoadingLog(false);
-        throw new Error(result.error || "Erro ao fazer login")
+        throw new Error(result.error || "Erro ao fazer login");
       }
 
       setUser({
@@ -76,38 +75,27 @@ export default function LoginPage() {
         phone: result.phone,
         email: result.email || null,
         role: result.role,
-      })
+      });
 
-      setLoadingLog(false)
-
-      Success({ text: `Login Bem Sucedido, Seja Bem Vindo(a) ${result.name}` })
-
-      if (result.role === "client") {
-        router.push(`${API_URL}/main/${user?.id}`)
-      } else if (result.role === "admin") {
-        router.push(`${API_URL}/main/${user?.id}`)
-      }
+      setLoadingLog(false);
+      Success({ text: `Login Bem Sucedido, Seja Bem Vindo(a) ${result.name}` });
+      router.push(`${API_URL}/main/${result.id}`);
     } catch (error: any) {
       setLoadingLog(false);
-      UserNotFounded({ error })
+      UserNotFounded({ error });
     }
   };
 
   return (
     <AuthWrapper>
-
-        <span
-          onClick={(e) => router.push(`${API_URL}/`)}
-          className="absolute cursor-pointer ease-in-out duration-200 hover:bg-orange-500 active:bg-orange-500/50 left-4 top-4 bg-zinc-600 p-2 rounded-lg"
-        >
-          <ArrowLeft />
-        </span>
-
-      <div
-        className="w-full xl:w-[50%] min-w-[300px] flex flex-col justify-center items-center relative max-h-[60%] lg:max-h-full lg:h-full"
+      <span
+        onClick={() => router.push(`${API_URL}/`)}
+        className="absolute cursor-pointer ease-in-out duration-200 hover:bg-orange-500 active:bg-orange-500/50 left-4 top-4 bg-zinc-600 p-2 rounded-lg"
       >
-        
+        <ArrowLeft />
+      </span>
 
+      <div className="w-full xl:w-[50%] min-w-[300px] flex flex-col justify-center items-center relative max-h-[60%] lg:max-h-full lg:h-full">
         <Image
           src={'/img/barber_logo.png'}
           alt="Logo da barbearia"
@@ -169,9 +157,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <div
-        className="hidden xl:bg-[url('/bg_alternative.svg')] xl:h-full xl:bg-no-repeat xl:bg-center xl:bg-cover xl:flex-1 xl:flex xl:items-center xl:justify-center xl:rounded-4xl xl:shadow-lg"
-      >
+      <div className="hidden xl:bg-[url('/bg_alternative.svg')] xl:h-full xl:bg-no-repeat xl:bg-center xl:bg-cover xl:flex-1 xl:flex xl:items-center xl:justify-center xl:rounded-4xl xl:shadow-lg">
         <Image
           src={'/img/barber_logo.png'}
           alt="Logo da Barbearia"

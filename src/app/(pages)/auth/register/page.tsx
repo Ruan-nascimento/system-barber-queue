@@ -1,28 +1,28 @@
 "use client";
 
-import { useState, useEffect } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { API_URL } from "@/lib/utils"
-import { InputAuth } from "@/app/_components/inputAuth"
-import { useAuth } from "@/lib/AuthContext"
-import { Spinner } from "@/app/_components/spinner"
-import { registerSchema, RegisterForm } from "@/lib/schemas/registerSchema"
-import { AuthWrapper } from "@/app/_components/authWrapper"
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { API_URL } from "@/lib/utils";
+import { InputAuth } from "@/app/_components/inputAuth";
+import { useAuth } from "@/lib/AuthContext";
+import { Spinner } from "@/app/_components/spinner";
+import { registerSchema, RegisterForm } from "@/lib/schemas/registerSchema";
+import { AuthWrapper } from "@/app/_components/authWrapper";
 import Image from "next/image";
-import { ButtonComp } from "@/app/_components/buttonPattern"
-import { UserNotFounded } from "@/app/_components/toasts/error"
-import { Success } from "@/app/_components/toasts/success"
+import { ButtonComp } from "@/app/_components/buttonPattern";
+import { UserNotFounded } from "@/app/_components/toasts/error";
+import { Success } from "@/app/_components/toasts/success";
 
 export default function RegisterPage() {
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [name, setName] = useState<string>("")
-  const newName = name && name[0].toUpperCase() + name.slice(1)
-  const router = useRouter()
-  const { setUser, user, loading } = useAuth()
-  const [loadingRegister, setLoadingRegister] = useState<boolean>(false)
+  const [showPassword, setShowPassword] = useState(false);
+  const [name, setName] = useState("");
+  const newName = name && name[0].toUpperCase() + name.slice(1);
+  const router = useRouter();
+  const { setUser, user, loading } = useAuth();
+  const [loadingRegister, setLoadingRegister] = useState(false);
 
   const {
     register,
@@ -30,24 +30,28 @@ export default function RegisterPage() {
     formState: { errors },
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
-  })
+  });
 
   useEffect(() => {
     if (!loading && user) {
-      if (user.role === "admin") {
-        router.push(`${API_URL}/main/${user.id}`)
-      } else if (user.role === "client") {
-        router.push(`${API_URL}/client/${user.id}`)
-      }
+      router.push(`${API_URL}/main/${user.id}`);
     }
-  }, [loading, user, router])
+  }, [loading, user, router]);
 
   if (loading) {
     return (
-      <div className="h-dvh w-screen flex items-center justify-center bg-zinc-900 text-zinc-200">
-        <p>Carregando...</p>
+      <div className="h-dvh w-screen flex items-center justify-center bg-zinc-900 text-zinc-200 flex-col gap-10">
+        <p className="text-2xl font-bold">Carregando...</p>
+        <Spinner />
       </div>
-    )
+    );
+  }
+
+  if (user) {
+    <div className="h-dvh w-screen flex items-center justify-center bg-zinc-900 text-zinc-200 flex-col gap-10">
+        <p className="text-2xl font-bold">Carregando...</p>
+        <Spinner />
+    </div>
   }
 
   const onSubmit = async (data: RegisterForm) => {
@@ -60,12 +64,12 @@ export default function RegisterPage() {
         },
         body: JSON.stringify(data),
         credentials: "include",
-      })
+      });
 
-      const result = await response.json()
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Erro ao Cadastrar")
+        throw new Error(result.error || "Erro ao Cadastrar");
       }
 
       setUser({
@@ -76,28 +80,18 @@ export default function RegisterPage() {
         role: result.role,
       });
 
-      setLoadingRegister(false)
-
-      Success({text: `Seja Bem Vindo(a) ${result.name}`})
-
-      if (result.role === "admin") {
-        router.push(`${API_URL}/main/${result.id}`);
-      } else {
-        router.push(`${API_URL}/main/${result.id}`);
-      }
+      setLoadingRegister(false);
+      Success({ text: `Seja Bem Vindo(a) ${result.name}` });
+      router.push(`${API_URL}/main/${result.id}`);
     } catch (error: any) {
-      setLoadingRegister(false)
-      UserNotFounded({error})
+      setLoadingRegister(false);
+      UserNotFounded({ error });
     }
   };
 
   return (
     <AuthWrapper className="flex-row gap-4">
-
-      <div
-      className="w-full md:w-[60%] md:max-w-[450px] flex flex-col justify-center items-center lg:p-6"
-      >
-
+      <div className="w-full md:w-[60%] md:max-w-[450px] flex flex-col justify-center items-center lg:p-6">
         <h1 className="text-2xl font-bold text-zinc-100 mb-6 text-center">
           {name ? `Bem Vindo ${newName}!` : "Seja Nosso Cliente!"}
         </h1>
@@ -169,9 +163,7 @@ export default function RegisterPage() {
           {loadingRegister ? (
             <Spinner />
           ) : (
-            <ButtonComp.root
-              type="submit"
-            >
+            <ButtonComp.root type="submit">
               Registrar
             </ButtonComp.root>
           )}
@@ -182,18 +174,16 @@ export default function RegisterPage() {
             Já tem uma Conta? <b className="text-orange-500">Entrar</b>
           </Link>
         </div>
-        </div>
+      </div>
 
-        <div className="hidden xl:bg-[url('/bg_alternative.svg')] xl:h-full xl:bg-no-repeat xl:bg-center xl:bg-cover xl:flex-1 xl:flex xl:items-center xl:justify-center xl:rounded-4xl xl:shadow-lg">
-        
-            <Image
-            src={'/img/barber_logo.png'}
-            alt="Logo da Barbearia"
-            width={450}
-            height={450}
-            />
-        </div>
-        </AuthWrapper>
-    
-  )
+      <div className="hidden xl:bg-[url('/bg_alternative.svg')] xl:h-full xl:bg-no-repeat xl:bg-center xl:bg-cover xl:flex-1 xl:flex xl:items-center xl:justify-center xl:rounded-4xl xl:shadow-lg">
+        <Image
+          src={'/img/barber_logo.png'}
+          alt="Logo da Barbearia"
+          width={450}
+          height={450}
+        />
+      </div>
+    </AuthWrapper>
+  );
 }
