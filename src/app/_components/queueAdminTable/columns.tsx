@@ -96,7 +96,7 @@ export const columns: ColumnDef<QueueEntry, any>[] = [
       );
     },
     size: 120,
-    meta: { responsive: { hideOnMobile: true } } as CustomColumnMeta<QueueEntry, any>,
+    meta: { responsive: { hideOnMobile: false } } as CustomColumnMeta<QueueEntry, any>,
   },
   {
     accessorFn: (row) => row.queueServices.map((qs) => qs.service.name).join(", "),
