@@ -53,8 +53,15 @@ const createWhatsAppLink = (
   const formattedPhone = formatPhoneForWhatsApp(phone);
   const message = createCustomWhatsAppMessage(userName, queueServices);
   const encodedMessage = encodeURIComponent(message);
-  return `https://web.whatsapp.com/send?phone=${formattedPhone.replace("+", "")}&text=${encodedMessage}`;
-};
+  const screenWidth = window.innerWidth;
+    
+  if (screenWidth > 1050) {
+    return `https://web.whatsapp.com/send?phone=${formattedPhone.replace("+", "")}&text=${encodedMessage}`;
+  } else {
+    return `https://wa.me/${formattedPhone.replace("+", "")}?text=${encodedMessage}`;
+  }
+}
+
 
 export const columns: ColumnDef<QueueEntry, any>[] = [
   {
