@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server"
-import { prisma } from "@/lib/utils"
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/utils";
 
 export async function GET(request: Request) {
   try {
@@ -7,45 +7,65 @@ export async function GET(request: Request) {
       where: {
         status: { in: ["waiting", "in_progress"] },
       },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            phone: true,
-          },
-        },
-        barber: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        queueServices: {
-          include: {
-            service: {
-              select: {
-                id: true,
-                name: true,
-                price: true,
-                averageTime: true,
-              },
-            },
-          },
-        },
-      },
       orderBy: [
-        { barberId: "asc" }, 
-        { updatedAt: "desc" }, 
+        { barberId: "asc" },
+        { updatedAt: "desc" },
       ],
-    })
+    });
 
-    return NextResponse.json(queues, { status: 200 })
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+      },
+    });
+
+    const barbers = await prisma.barber.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    const queueServices = await prisma.queueService.findMany();
+
+    const services = await prisma.service.findMany({
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        averageTime: true,
+      },
+    });
+
+    const enrichedQueues = queues.map((queue) => {
+      const user = users.find((u) => u.id === queue.userId) || null;
+      const barber = barbers.find((b) => b.id === queue.barberId) || null;
+      const queueServicesForQueue = queueServices.filter((qs) => qs.queueId === queue.id);
+
+      const enrichedQueueServices = queueServicesForQueue.map((qs) => {
+        const service = services.find((s) => s.id === qs.serviceId) || null;
+        return {
+          ...qs,
+          service,
+        };
+      });
+
+      return {
+        ...queue,
+        user,
+        barber,
+        queueServices: enrichedQueueServices,
+      };
+    });
+
+    return NextResponse.json(enrichedQueues, { status: 200 });
   } catch (error) {
-    console.error("Erro ao listar a fila:", error)
+    console.error("Erro ao listar a fila:", error);
     return NextResponse.json(
       { error: "Erro interno no servidor" },
       { status: 500 }
-    )
+    );
   }
 }

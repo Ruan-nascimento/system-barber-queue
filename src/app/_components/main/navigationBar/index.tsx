@@ -1,7 +1,7 @@
 
 import { PageSelected } from "@/app/(pages)/main/[id]/page"
 import { ButtonNavigationBar } from "./buttonNavigationBar"
-import { CalendarClock, Clock, Home, PanelBottom } from "lucide-react"
+import { CalendarClock, Clock, Home, PanelBottom, Settings2Icon } from "lucide-react"
 import { twMerge } from "tailwind-merge"
 import Image from "next/image"
 import { ButtonAccount } from "../../buttonAccount"
@@ -19,7 +19,7 @@ export const NavBarMainPage = ({page, setPage, ...rest}:NavBarMainPageProps) => 
 
     return(
         <nav
-        className={twMerge(`flex items-center justify-between flex-col min-w-[300px] gap-4 w-full bg-[#020501] border-r-white/30 border-r py-6 h-full px-6`, rest.className)}
+        className={twMerge(`flex items-center justify-between flex-col min-w-[250px] gap-4 w-full bg-[#020501] border-r-white/30 border-r py-6 h-full px-6`, rest.className)}
         >   
             <div className="w-full flex items-center flex-col gap-4">
                 <Image
@@ -44,6 +44,15 @@ export const NavBarMainPage = ({page, setPage, ...rest}:NavBarMainPageProps) => 
                     <Clock/>
                     Fila
                 </ButtonNavigationBar>
+
+                <ButtonNavigationBar ord="settings" page={page}
+                onClick={() => setPage("settings")}
+                className="hidden lg:flex"
+                >
+                    <Settings2Icon/>
+                    Configurações
+                </ButtonNavigationBar>
+                
 
                 <ButtonNavigationBar ord="history" page={page}
                 onClick={() => setPage('history')}

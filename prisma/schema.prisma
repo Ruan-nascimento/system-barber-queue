@@ -8,78 +8,60 @@ generator client {
 }
 
 model User {
-  id         String      @id @default(uuid())
-  name       String
-  phone      String      @unique
-  email      String?     @unique
-  password   String
-  role       String      @default("client")
+  id              String      @id @default(uuid())
+  name            String
+  phone           String      @unique
+  email           String?     @unique
+  password        String
+  role            String      @default("client")
   tokenId         String?     @unique
   tokenExpiration DateTime?
-  createdAt  DateTime    @default(now())
-  queues     Queue[]
-  histories  History[]
+  createdAt       DateTime    @default(now())
 }
-
 
 model Barber {
   id        String   @id @default(uuid())
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  queues    Queue[] 
-  histories History[]
 }
 
 model Service {
-  id          String        @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String 
   price       Float     
   averageTime Int      
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  queueServices QueueService[]
-  historieServices HistoryService[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Queue {
-  id            String        @id @default(uuid())
-  userId        String
-  user          User          @relation(fields: [userId], references: [id])
-  barberId      String
-  barber        Barber        @relation(fields: [barberId], references: [id])
-  status        String        @default("waiting")
-  position      Int           @default(0) 
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  queueServices QueueService[]
+  id        String   @id @default(uuid())
+  userId    String  
+  barberId  String   
+  status    String   @default("waiting")
+  position  Int      @default(0) 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model QueueService {
   id        String   @id @default(uuid())
-  queueId   String
-  queue     Queue    @relation(fields: [queueId], references: [id])
-  serviceId String
-  service   Service  @relation(fields: [serviceId], references: [id])
+  queueId   String 
+  serviceId String   
   createdAt DateTime @default(now())
 }
 
 model History {
-  id            String          @id @default(uuid())
-  userId        String
-  user          User            @relation(fields: [userId], references: [id])
-  barberId      String
-  barber        Barber          @relation(fields: [barberId], references: [id])
-  totalValue    Float           
-  createdAt     DateTime        @default(now())
-  historyServices HistoryService[] 
+  id         String   @id @default(uuid())
+  userId     String  
+  barberId   String  
+  totalValue Float           
+  createdAt  DateTime @default(now())
 }
 
 model HistoryService {
   id        String   @id @default(uuid())
   historyId String
-  history   History  @relation(fields: [historyId], references: [id])
-  serviceId String
-  service   Service  @relation(fields: [serviceId], references: [id])
   createdAt DateTime @default(now())
 }

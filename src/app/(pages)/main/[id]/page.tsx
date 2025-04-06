@@ -9,8 +9,9 @@ import { NavBarMainPage } from "@/app/_components/main/navigationBar";
 import { API_URL } from "@/lib/utils";
 import { HeaderMainPageMobile } from "@/app/_components/main/header";
 import { QueueAdmin } from "@/app/_components/layouts/queueAdmin";
+import { SettingsAdmin } from "@/app/_components/layouts/settings";
 
-export type PageSelected = "dashboard" | "history" | "queue"
+export type PageSelected = "dashboard" | "history" | "queue" | "settings"
 
 export default function MainPage() {
   const { user, loading, logout } = useAuth()
@@ -50,7 +51,7 @@ export default function MainPage() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="fixed top-0 left-0 h-full w-[50%] min-w-[200px] max-w-[350px] shadow-lg z-50 lg:hidden"
+              className="fixed top-0 left-0 h-full w-[50%] min-w-[200px] shadow-lg z-50 lg:hidden"
             >
               <NavBarMainPage setPage={setPage} page={page} className="absolute top-0 left-0"/>
             </motion.div>
@@ -74,16 +75,18 @@ export default function MainPage() {
       <NavBarMainPage 
       setPage={setPage} 
       page={page}
-      className="hidden lg:w-[25%] lg:flex lg:max-w-[300px] lg:shadow-md"
+      className="hidden lg:w-[20%] lg:flex lg:max-w-[300px] lg:shadow-md"
       />
 
       
 
       {/* Paginação - troca de páginas */}
       <main
-      className="pt-20 lg:pt-6 w-full h-full"
+      className="pt-20 pb-10 lg:pt-6 w-full h-full"
       >
         {page === 'queue' && <QueueAdmin/>}
+
+        {page === 'settings' && <SettingsAdmin/>}
       </main>
 
     </div>

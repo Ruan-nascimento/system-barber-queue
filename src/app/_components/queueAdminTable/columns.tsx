@@ -1,3 +1,4 @@
+// src/app/_components/queueAdminTable/columns.tsx
 import { ColumnDef, ColumnMeta } from "@tanstack/react-table";
 import { QueueEntry } from "@/lib/hooks/useQueue";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,7 @@ interface CustomColumnMeta<TData, TValue> extends ColumnMeta<TData, TValue> {
 }
 
 const calculateTotalPrice = (queueServices: QueueEntry["queueServices"]) => {
-  return queueServices.reduce((total, qs) => total + qs.service.price, 0);
+  return queueServices.reduce((total, qs) => (qs.service ? total + qs.service.price : total), 0);
 };
 
 const formatPhoneForWhatsApp = (phone: string) => {
@@ -22,7 +23,6 @@ const formatPhoneForWhatsApp = (phone: string) => {
   }
   return cleanedPhone;
 };
-
 
 const getGreetingByTime = () => {
   const hour = new Date().getHours();
@@ -37,10 +37,10 @@ const createCustomWhatsAppMessage = (
 ) => {
   const greeting = getGreetingByTime();
   const servicesList = queueServices
-    .map((qs) => `*- ${qs.service.name}*`)
+    .map((qs) => (qs.service ? `*- ${qs.service.name}*` : "*- Serviço não encontrado*"))
     .join("\n");
 
-  const message = Message({userName, greeting, servicesList})
+  const message = Message({ userName, greeting, servicesList });
 
   return message;
 };
@@ -54,14 +54,13 @@ const createWhatsAppLink = (
   const message = createCustomWhatsAppMessage(userName, queueServices);
   const encodedMessage = encodeURIComponent(message);
   const screenWidth = window.innerWidth;
-    
+
   if (screenWidth > 1050) {
     return `https://web.whatsapp.com/send?phone=${formattedPhone.replace("+", "")}&text=${encodedMessage}`;
   } else {
     return `https://wa.me/${formattedPhone.replace("+", "")}?text=${encodedMessage}`;
   }
-}
-
+};
 
 export const columns: ColumnDef<QueueEntry, any>[] = [
   {
@@ -106,10 +105,14 @@ export const columns: ColumnDef<QueueEntry, any>[] = [
     meta: { responsive: { hideOnMobile: false } } as CustomColumnMeta<QueueEntry, any>,
   },
   {
-    accessorFn: (row) => row.queueServices.map((qs) => qs.service.name).join(", "),
+    accessorFn: (row) => row.queueServices.map((qs) => (qs.service ? qs.service.name : "Serviço não encontrado")).join(", "),
     header: "Serviços",
     cell: ({ row }) => (
-      <span>{row.original.queueServices.map((qs) => qs.service.name).join(", ")}</span>
+      <span>
+        {row.original.queueServices
+          .map((qs) => (qs.service ? qs.service.name : "Serviço não encontrado"))
+          .join(", ")}
+      </span>
     ),
     size: 200,
     meta: { responsive: { hideOnMobile: true } } as CustomColumnMeta<QueueEntry, any>,

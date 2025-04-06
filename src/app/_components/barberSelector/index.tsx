@@ -14,7 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Check, ChevronDownIcon, SearchIcon } from "lucide-react";
+import { Check, ChevronDownIcon,  } from "lucide-react";
 
 interface Barber {
   id: string;
