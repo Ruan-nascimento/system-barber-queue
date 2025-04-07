@@ -1,13 +1,13 @@
-import { useBarbers } from "@/lib/hooks/useBarbers";
 import { Clock3Icon, RefreshCw } from "lucide-react";
 import { BarberSelector } from "../../barberSelector";
 import { QueueAdminTable } from "../../queueAdminTable";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useQueue } from "@/lib/hooks/useQueue";
+import { useBarbersContext } from "@/lib/context/BarbersContext";
 
 export const QueueAdmin = () => {
-  const { barbers } = useBarbers();
+  const { barbers } = useBarbersContext();
   const [selectedBarber, setSelectedBarber] = useState<string | null>(null);
   const { refetch, loading } = useQueue();
 

@@ -1,4 +1,3 @@
-// components/BarberSelector.tsx
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,11 +13,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Check, ChevronDownIcon,  } from "lucide-react";
+import { Check, ChevronDownIcon } from "lucide-react";
 
 interface Barber {
   id: string;
   name: string;
+  status: string;
 }
 
 interface BarberSelectorProps {
@@ -40,13 +40,20 @@ export const BarberSelector = ({
 }: BarberSelectorProps) => {
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    if (!value && barbers.length > 0) {
-      onChange(barbers[0].id);
-    }
-  }, [barbers, value, onChange]);
+  const activeBarbers = barbers.filter((barber) => barber.status === "active");
 
-  const selectedBarber = barbers.find((barber) => barber.id === value);
+  useEffect(() => {
+    if (activeBarbers.length > 0) {
+      const isCurrentValueActive = activeBarbers.some((barber) => barber.id === value);
+      if (!isCurrentValueActive) {
+        onChange(activeBarbers[0].id);
+      }
+    } else {
+      onChange(null);
+    }
+  }, [activeBarbers, value, onChange]);
+
+  const selectedBarber = activeBarbers.find((barber) => barber.id === value);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -61,7 +68,7 @@ export const BarberSelector = ({
           <ChevronDownIcon className="h-4 w-4 text-white" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className=" p-0 bg-zinc-900 border-zinc-600 border shadow-md rounded-md w-full">
+      <PopoverContent className="p-0 bg-zinc-900 border-zinc-600 border shadow-md rounded-md w-full">
         <Command>
           <div className="flex items-center border-b border-gray-200 px-1">
             <CommandInput
@@ -74,7 +81,7 @@ export const BarberSelector = ({
               Nenhum Barbeiro Encontrado
             </CommandEmpty>
             <CommandGroup>
-              {barbers.map((barber) => (
+              {activeBarbers.map((barber) => (
                 <CommandItem
                   key={barber.id}
                   value={barber.name}

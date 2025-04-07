@@ -5,12 +5,13 @@ import { Spinner } from "../spinner";
 import { Success } from "../toasts/success";
 import { UserNotFounded } from "../toasts/error";
 import { useServicesContext } from "@/lib/context/servicesContext";
+import { Input } from "@/components/ui/input";
 
 export const AddNewServices = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [averageTime, setAverageTime] = useState("");
-  const { addService, error, success, isSubmitting, refetch } = useServicesContext();
+  const { addService, error, isSubmitting, refetch } = useServicesContext();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,10 +37,10 @@ export const AddNewServices = () => {
       <h2 className="font-semibold">Adicionar Um Novo Serviço</h2>
 
       <div className="w-full mt-6 flex flex-col gap-1">
-        <input
+        <Input
           id="service"
           placeholder="Nome do Serviço..."
-          className="bg-gray-700 w-full p-2 px-4 rounded-lg outline-none text-white"
+          className=" w-full p-2 px-4 rounded-lg outline-none text-white"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -47,11 +48,11 @@ export const AddNewServices = () => {
 
       <div className="flex 2xl:flex-row flex-col w-full justify-between 2xl:gap-6">
         <div className="w-full mt-6 flex flex-col gap-1">
-          <input
+          <Input
             id="value"
             type="number"
             placeholder="Valor R$"
-            className="bg-gray-700 w-full p-2 px-4 rounded-lg outline-none text-white"
+            className=" w-full p-2 px-4 rounded-lg outline-none text-white"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             step="0.01"
@@ -59,11 +60,11 @@ export const AddNewServices = () => {
         </div>
 
         <div className="w-full mt-6 flex flex-col gap-1">
-          <input
+          <Input
             id="averageTime"
             type="number"
             placeholder="Tempo em Minutos"
-            className="bg-gray-700 w-full p-2 px-4 rounded-lg outline-none text-white"
+            className=" w-full p-2 px-4 rounded-lg outline-none text-white"
             value={averageTime}
             onChange={(e) => setAverageTime(e.target.value)}
           />
@@ -72,8 +73,8 @@ export const AddNewServices = () => {
 
       <Button
         type="submit"
-        className="w-full p-2 bg-orange-500 mt-6 cursor-pointer duration-200 ease-in-out hover:bg-orange-500/60"
-        disabled={isSubmitting}
+        className="w-full p-2 bg-orange-500 mt-6 cursor-pointer duration-200 ease-in-out hover:bg-orange-500/60 disabled:bg-orange-700 disabled:cursor-not-allowed"
+        disabled={isSubmitting || name === '' || price === '' || averageTime === ''}
       >
         {isSubmitting ? <Spinner className="absolute top-1/2 left-1/2" /> : "Adicionar Serviço"}
       </Button>

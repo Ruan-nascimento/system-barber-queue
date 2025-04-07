@@ -10,6 +10,7 @@ import { API_URL } from "@/lib/utils";
 import { HeaderMainPageMobile } from "@/app/_components/main/header";
 import { QueueAdmin } from "@/app/_components/layouts/queueAdmin";
 import { SettingsAdmin } from "@/app/_components/layouts/settings";
+import { BarbersProvider } from "@/lib/context/BarbersContext";
 
 export type PageSelected = "dashboard" | "history" | "queue" | "settings"
 
@@ -80,13 +81,15 @@ export default function MainPage() {
 
       
 
-      {/* Paginação - troca de páginas */}
+
       <main
       className="pt-20 pb-10 lg:pt-6 w-full h-full"
       >
+        <BarbersProvider>
         {page === 'queue' && <QueueAdmin/>}
 
         {page === 'settings' && <SettingsAdmin/>}
+        </BarbersProvider>
       </main>
 
     </div>

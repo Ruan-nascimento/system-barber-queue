@@ -5,6 +5,7 @@ import { useState } from "react"
 import { ButtonConfig } from "../../buttonConfig"
 import { ProfileSettingPage } from "./profile"
 import { ServicesSettingsPage } from "./services"
+import { BarbersSettingPage } from "./barbers"
 
 export type settings = "profile" | "services" | "barbers" | "items"
 
@@ -45,6 +46,7 @@ export const SettingsAdmin = () => {
 
                 {selected === 'profile' && <ProfileSettingPage/>}
                 {selected === 'services' && <ServicesSettingsPage/>}
+                {selected === 'barbers' && <BarbersSettingPage/>}
 
             </main>
 

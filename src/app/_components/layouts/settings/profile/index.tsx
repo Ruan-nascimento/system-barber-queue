@@ -2,7 +2,6 @@ import { ButtonEdit } from "@/app/_components/buttonEdit"
 import { UserInitialsAvatar } from "@/app/_components/userInitialsAvatar"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/AuthContext"
-import { Edit3Icon } from "lucide-react"
 
 export const ProfileSettingPage = () => {
 
