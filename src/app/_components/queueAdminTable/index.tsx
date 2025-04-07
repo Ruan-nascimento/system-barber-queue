@@ -31,7 +31,6 @@ interface QueueAdminTableProps {
 export const QueueAdminTable = ({ selectedBarber }: QueueAdminTableProps) => {
   const { queueEntries, loading, error, refetch } = useQueue();
 
-  // Memoize filteredEntries para evitar recalcular desnecessariamente
   const filteredEntries = useMemo(() => {
     if (!queueEntries) return [];
     return selectedBarber
@@ -39,7 +38,6 @@ export const QueueAdminTable = ({ selectedBarber }: QueueAdminTableProps) => {
       : queueEntries;
   }, [queueEntries, selectedBarber]);
 
-  // Configuração do useReactTable com paginação
   const table = useReactTable({
     data: filteredEntries,
     columns,
@@ -47,12 +45,11 @@ export const QueueAdminTable = ({ selectedBarber }: QueueAdminTableProps) => {
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 10, // Limita a 10 linhas por página
+        pageSize: 10,
       },
     },
   });
 
-  // Estado de carregamento
   if (loading) {
     return (
       <div className="flex justify-center py-10">
@@ -61,7 +58,7 @@ export const QueueAdminTable = ({ selectedBarber }: QueueAdminTableProps) => {
     );
   }
 
-  // Estado de erro
+
   if (error) {
     return (
       <div className="p-4 text-center text-red-500">
@@ -150,7 +147,6 @@ export const QueueAdminTable = ({ selectedBarber }: QueueAdminTableProps) => {
         </TableBody>
       </Table>
 
-      {/* Controles de paginação */}
       <div className="flex justify-end gap-2 p-4">
         <button
           onClick={() => table.previousPage()}

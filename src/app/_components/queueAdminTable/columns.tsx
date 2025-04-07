@@ -1,4 +1,3 @@
-// src/app/_components/queueAdminTable/columns.tsx
 import { ColumnDef, ColumnMeta } from "@tanstack/react-table";
 import { QueueEntry } from "@/lib/hooks/useQueue";
 import { Button } from "@/components/ui/button";
@@ -26,9 +25,9 @@ const formatPhoneForWhatsApp = (phone: string) => {
 
 const getGreetingByTime = () => {
   const hour = new Date().getHours();
-  if (hour < 12) return emoji.emojify(":sunny: Bom dia");
-  if (hour < 18) return emoji.emojify(":city_sunset: Boa tarde");
-  return emoji.emojify(":moon: Boa noite");
+  if (hour < 12) return emoji.emojify(":sunny: Bom dia!");
+  if (hour < 18) return emoji.emojify(":city_sunset: Boa tarde!");
+  return emoji.emojify(":crescent_moon: Boa noite!");
 };
 
 const createCustomWhatsAppMessage = (
