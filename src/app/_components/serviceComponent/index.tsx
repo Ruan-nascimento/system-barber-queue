@@ -20,7 +20,7 @@ export const ServiceComponent = ({service, value, time}:ServiceComponentProps) =
 
     return(
         <div
-            className="bg-zinc-700 gap-4 px-4 py-2 rounded-lg flex justify-between items-center cursor-pointer duration-200 ease-in-out hover:bg-zinc-700/80"
+            className="border-b border-b-zinc-700/60 gap-4 px-4 py-2 rounded-lg flex justify-between items-center cursor-pointer duration-200 ease-in-out hover:bg-zinc-700/80"
             >
                 <span className=" flex-1 duration-200 ease-in-out hover:text-orange-500">{service.name}</span>
                 <span className="text-green-600 font-bold w-20">{value}</span>

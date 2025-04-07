@@ -15,7 +15,15 @@ export const ListAllServices = ({ findService }: ListAllServicesProps) => {
   );
 
   return (
-    <div className="p-4 h-full w-[60%] rounded-lg max-h-[450px] bg-zinc-800 flex flex-col gap-2 overflow-auto custom-scrollbar">
+    <main className="p-4 h-full w-[60%] rounded-lg max-h-[450px] bg-zinc-800 flex flex-col gap-2 overflow-auto custom-scrollbar">
+
+      <header className="w-full flex justify-between px-3">
+        <span className=" flex-1 max-w-[50%] text-xs text-zinc-500/80">Serviço</span>
+        <span className="text-xs text-zinc-500/80 w-20">Valor R$</span>
+        <span className="w-12 text-xs text-zinc-500/80">Tempo</span>
+        <span className="text-xs text-zinc-500/80">Remover</span>
+      </header>
+
       {loading ? (
         <Spinner />
       ) : filteredServices && filteredServices.length > 0 ? (
@@ -36,6 +44,6 @@ export const ListAllServices = ({ findService }: ListAllServicesProps) => {
       ) : (
         <p className="text-zinc-400 text-center">Serviço não encontrado</p>
       )}
-    </div>
+    </main>
   );
 };
