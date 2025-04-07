@@ -12,6 +12,7 @@ model User {
   name            String
   phone           String      @unique
   email           String?     @unique
+  color           String?
   password        String
   role            String      @default("client")
   tokenId         String?     @unique
