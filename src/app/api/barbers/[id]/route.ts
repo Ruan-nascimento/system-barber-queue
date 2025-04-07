@@ -2,7 +2,7 @@ import { prisma } from "@/lib/utils";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: any) {
   try {
     const cookieStore = cookies();
     const token = (await cookieStore).get("barberToken");
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
 
-    const barberId = params.id;
+    const barberId = params.id as string;
     const barber = await prisma.barber.findUnique({
       where: { id: barberId },
       select: {
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: any) {
   try {
     const cookieStore = cookies();
     const token = (await cookieStore).get("barberToken");
@@ -42,7 +42,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
 
-    const barberId = params.id;
+    const barberId = params.id as string;
     const barber = await prisma.barber.findUnique({
       where: { id: barberId },
     });
@@ -62,7 +62,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: any) {
   try {
     const cookieStore = cookies();
     const token = (await cookieStore).get("barberToken");
@@ -71,7 +71,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
 
-    const barberId = params.id;
+    const barberId = params.id as string;
     const { status } = await req.json();
 
     if (!status || !["active", "inactive"].includes(status)) {
