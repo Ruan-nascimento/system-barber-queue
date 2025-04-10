@@ -6,6 +6,8 @@ import { ButtonConfig } from "../../buttonConfig"
 import { ProfileSettingPage } from "./profile"
 import { ServicesSettingsPage } from "./services"
 import { BarbersSettingPage } from "./barbers"
+import { ProductsSettingPage } from "./products"
+import { ItemsProvider } from "@/lib/context/ItemsContext"
 
 export type settings = "profile" | "services" | "barbers" | "items"
 
@@ -43,11 +45,12 @@ export const SettingsAdmin = () => {
                     </ButtonConfig>
 
                 </aside>
-
+                <ItemsProvider>
                 {selected === 'profile' && <ProfileSettingPage/>}
                 {selected === 'services' && <ServicesSettingsPage/>}
                 {selected === 'barbers' && <BarbersSettingPage/>}
-
+                {selected === 'items' && <ProductsSettingPage/>}
+                </ItemsProvider>
             </main>
 
         </section>
