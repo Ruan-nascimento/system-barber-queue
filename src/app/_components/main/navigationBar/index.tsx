@@ -1,7 +1,7 @@
 
 import { PageSelected } from "@/app/(pages)/main/[id]/page"
 import { ButtonNavigationBar } from "./buttonNavigationBar"
-import { CalendarClock, Clock, Home, PanelBottom, Settings2Icon } from "lucide-react"
+import { CalendarClock, Clock, Home, PanelBottom, Settings2Icon, UserCheckIcon } from "lucide-react"
 import { twMerge } from "tailwind-merge"
 import Image from "next/image"
 import { ButtonAccount } from "../../buttonAccount"
@@ -43,6 +43,13 @@ export const NavBarMainPage = ({page, setPage, ...rest}:NavBarMainPageProps) => 
                 >
                     <Clock/>
                     Fila
+                </ButtonNavigationBar>
+
+                <ButtonNavigationBar ord="clients" page={page}
+                onClick={() => setPage("clients")}
+                >
+                    <UserCheckIcon/>
+                    Clientes
                 </ButtonNavigationBar>
 
                 <ButtonNavigationBar ord="settings" page={page}

@@ -11,8 +11,9 @@ import { HeaderMainPageMobile } from "@/app/_components/main/header";
 import { QueueAdmin } from "@/app/_components/layouts/queueAdmin";
 import { SettingsAdmin } from "@/app/_components/layouts/settings";
 import { BarbersProvider } from "@/lib/context/BarbersContext";
+import { ClientsAdmin } from "@/app/_components/layouts/clients";
 
-export type PageSelected = "dashboard" | "history" | "queue" | "settings"
+export type PageSelected = "dashboard" | "history" | "queue" | "settings" | "clients"
 
 export default function MainPage() {
   const { user, loading, logout } = useAuth()
@@ -89,6 +90,8 @@ export default function MainPage() {
         {page === 'queue' && <QueueAdmin/>}
 
         {page === 'settings' && <SettingsAdmin/>}
+
+        {page === 'clients' && <ClientsAdmin/>}
         </BarbersProvider>
       </main>
 

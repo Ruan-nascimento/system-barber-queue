@@ -87,3 +87,12 @@ body {
     box-shadow: 0 0 5px rgba(239, 68, 68, 0.5);
   }
 }
+
+.invisible-scroll {
+
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
